@@ -37,7 +37,7 @@ public class User extends BaseEntity implements UserDetails{
     private String profileImgUrl;
 
     //username == userId123
-    //여러가지 시도해보다가 오류나서 일단은 username상태로 뒀습니다ㅠㅠ
+    //여러가지 시도해보다가 오류나서 일단은 username상태로 뒀습니다ㅠㅠ12
     @Column(name = "username", length = 50, unique = true)
     private String username;
 
