@@ -22,9 +22,7 @@ else
   sleep 5
 fi
 
-source ~/.bashrc
 
-echo ">>>환경변수 주입" >> /var/www/html/deploy.log
 
 DEPLOY_JAR=$DEPLOY_PATH$JAR_NAME
 echo ">>> DEPLOY_JAR 배포"    >> /var/www/html/deploy.log
