@@ -17,7 +17,7 @@ import static com.app.cindy.constants.CommonResponseStatus.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/user")
 public class UserController {
     private final UserService userService;
 
