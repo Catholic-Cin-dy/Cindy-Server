@@ -1,4 +1,4 @@
-package com.app.cindy.repository.util;
+package com.app.cindy.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

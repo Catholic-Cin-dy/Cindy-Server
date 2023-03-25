@@ -72,6 +72,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/webjars/**").permitAll()
                 .antMatchers("/v3/api-docs").permitAll()
                 .antMatchers("/image/**").permitAll()
+                .antMatchers("/auth/kakao").permitAll()
 
                 .antMatchers("/test/authUser").authenticated()
                 .antMatchers("/users/login").permitAll()

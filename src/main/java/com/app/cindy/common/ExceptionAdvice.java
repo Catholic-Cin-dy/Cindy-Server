@@ -18,6 +18,7 @@ import java.io.StringWriter;
 @RestControllerAdvice
 public class ExceptionAdvice {
 
+
     private void getExceptionStackTrace(Exception e, @AuthenticationPrincipal User user,
                                         HttpServletRequest request) {
         StringWriter sw = new StringWriter();
