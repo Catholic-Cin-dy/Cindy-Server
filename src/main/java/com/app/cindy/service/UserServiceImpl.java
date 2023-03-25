@@ -33,10 +33,10 @@ public class UserServiceImpl implements UserService {
             throw new BadRequestException(NOT_EXIST_USER);
         }
 
-        User user=userRepository.findByUsername(loginUserInfo.getUsername());
-        Long userId = user.getId();
+        Optional<User> user=userRepository.findByUsername(loginUserInfo.getUsername());
+        Long userId = user.get().getId();
 
-        if(!passwordEncoder.matches(loginUserInfo.getPassword(),user.getPassword())){
+        if(!passwordEncoder.matches(loginUserInfo.getPassword(),user.get().getPassword())){
             throw new BadRequestException(NOT_CORRECT_PASSWORD);
         }
 
