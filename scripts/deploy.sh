@@ -22,9 +22,15 @@ else
   sleep 5
 fi
 
+source ~/.bashrc
+
+echo ">>>환경변수 주입" >> /var/www/prod/deploy.log
 
 
 DEPLOY_JAR=$DEPLOY_PATH$JAR_NAME
 echo ">>> DEPLOY_JAR 위치" $DEPLOY_JAR    >> /var/www/html/deploy.log
 echo ">>> DEPLOY_JAR 배포"    >> /var/www/html/deploy.log
-nohup java -jar /var/www/html/build/libs/cindy-server-0.0.1-SNAPSHOT.jar >> /var/www/html/deploy.log 2>/var/www/html/deploy_err.log &
+chmod -R 777 $DEPLOY_JAR
+echo ">>>DEPLOY_JAR 권한 부여"
+
+nohup java -jar -Dspring.profiles.active=local $DEPLOY_JAR >> /var/www/html/deploy.log 2>/var/www/html/deploy_err.log &
