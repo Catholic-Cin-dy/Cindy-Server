@@ -26,6 +26,5 @@ fi
 
 DEPLOY_JAR=$DEPLOY_PATH$JAR_NAME
 echo ">>> DEPLOY_JAR 위치" $DEPLOY_JAR    >> /var/www/html/deploy.log
-
 echo ">>> DEPLOY_JAR 배포"    >> /var/www/html/deploy.log
-nohup java -jar $DEPLOY_JAR >> /var/www/html/deploy.log 2>/var/www/html/deploy_err.log &
+nohup java -jar /var/www/html/build/libs/cindy-server-0.0.1-SNAPSHOT.jar >> /var/www/html/deploy.log 2>/var/www/html/deploy_err.log &
