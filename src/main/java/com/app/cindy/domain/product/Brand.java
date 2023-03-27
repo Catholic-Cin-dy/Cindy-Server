@@ -5,6 +5,8 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "Brand")
@@ -23,4 +25,8 @@ public class Brand {
 
     @Column(name="name")
     private String name;
+
+    @OneToMany(mappedBy = "id")
+    private List<Product> product=new ArrayList<>();
+
 }
