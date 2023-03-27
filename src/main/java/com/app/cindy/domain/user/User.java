@@ -2,6 +2,7 @@ package com.app.cindy.domain.user;
 
 import com.app.cindy.domain.Authority;
 import com.app.cindy.domain.BaseEntity;
+import com.app.cindy.domain.product.Product;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -11,9 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Set;
+import java.util.*;
 
 
 @Entity
@@ -41,6 +40,9 @@ public class User extends BaseEntity implements UserDetails{
     @Column(name = "username", length = 50, unique = true)
     private String username;
 
+    @Column(name="password")
+    private String password;
+
     @Column(name = "name", length = 50)
     private String name;
 
@@ -59,6 +61,9 @@ public class User extends BaseEntity implements UserDetails{
     @Column(name="login_date")
     private LocalDateTime loginDate;
 
+    @OneToMany(mappedBy="id")
+    List<Product> product =new ArrayList<>();
+
 
 
     @ManyToMany
@@ -75,7 +80,7 @@ public class User extends BaseEntity implements UserDetails{
 
     @Override
     public String getPassword() {
-        return null;
+        return password;
     }
 
     @Override

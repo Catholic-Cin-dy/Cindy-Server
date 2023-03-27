@@ -15,9 +15,11 @@ public class UserConvertor {
 
     public static User SignUpUser(UserReq.SignupUser signupUser, Authority authority, String passwordEncoded) {
         return User.builder()
+                .username(signupUser.getUsername())
                 .name(signupUser.getName())
                 .nickname(signupUser.getNickname())
                 .authorities(Collections.singleton(authority))
+                .password(passwordEncoded)
                 .build();
     }
 }
