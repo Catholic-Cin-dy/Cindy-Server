@@ -31,6 +31,6 @@ DEPLOY_JAR=$DEPLOY_PATH$JAR_NAME
 echo ">>> DEPLOY_JAR 위치" $DEPLOY_JAR >> /var/www/html/deploy.log
 echo ">>> DEPLOY_JAR 배포"    >> /var/www/html/deploy.log
 chmod -R 777 $DEPLOY_JAR
-echo ">>>DEPLOY_JAR 권한 부여"
+echo ">>>DEPLOY_JAR 권한 부여" >> /var/www/html/deploy.log
 
 nohup java -jar $DEPLOY_JAR >> /var/www/html/deploy.log 2>/var/www/html/deploy_err.log &
