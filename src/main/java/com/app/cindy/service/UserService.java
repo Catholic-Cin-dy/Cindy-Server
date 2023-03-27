@@ -14,4 +14,6 @@ public interface UserService {
 
 
     void updateFcmToken(Long userId, String token);
+
+    UserRes.Token signUp(UserReq.SignupUser signupUser);
 }

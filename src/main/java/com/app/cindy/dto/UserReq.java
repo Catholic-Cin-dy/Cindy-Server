@@ -30,7 +30,6 @@ public class UserReq {
 
         private String name;
 
-        private String phone;
     }
 
     @Getter
