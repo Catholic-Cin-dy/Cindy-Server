@@ -21,17 +21,15 @@ import java.util.*;
 public class SwaggerConfig {
     //jwt 토큰 인증을 위한 버튼까지 포함
 
-    public static final String AUTHORIZATION_HEADER = "Authorization";
 
     private List<SwaggerResourcesProvider> resourcesProviders;
 
     @Bean
     public Docket api() {
         Server serverLocal = new Server("local", "http://localhost:9000", "for local usages", Collections.emptyList(), Collections.emptyList());
-        Server UbuntuServer = new Server("server", "https://dev.runwayserver.shop", "for prod server", Collections.emptyList(), Collections.emptyList());
-        Server ProdServer = new Server("server", "https://prod.runwayserver.shop", "for dev server", Collections.emptyList(), Collections.emptyList());
+        Server UbuntuServer = new Server("server", "https://www.awesominki.shop/", "for prod server", Collections.emptyList(), Collections.emptyList());
         return new Docket(DocumentationType.OAS_30)
-                .servers(serverLocal,UbuntuServer,ProdServer)
+                .servers(serverLocal,UbuntuServer)
                 .consumes(getConsumeContentTypes())
                 .produces(getProduceContentTypes())
                 .securityContexts(Arrays.asList(securityContext())) // 추가
@@ -61,9 +59,9 @@ public class SwaggerConfig {
 
 
     private ApiInfo apiInfo() {
-        String description = "Runway";
+        String description = "Cindy";
         return new ApiInfoBuilder()
-                .title("Runway Rest API 명세서")
+                .title("Cindy Rest API 명세서")
                 .description(description)
                 .version("1.0")
                 .build();
