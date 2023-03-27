@@ -1,5 +1,7 @@
 package com.app.cindy.service;
 
+import com.app.cindy.convertor.UserConvertor;
+import com.app.cindy.domain.Authority;
 import com.app.cindy.repository.UserRepository;
 import com.app.cindy.domain.user.User;
 import com.app.cindy.dto.UserReq;
@@ -11,6 +13,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.app.cindy.constants.CommonResponseStatus.NOT_CORRECT_PASSWORD;
@@ -36,9 +39,12 @@ public class UserServiceImpl implements UserService {
         Optional<User> user=userRepository.findByUsername(loginUserInfo.getUsername());
         Long userId = user.get().getId();
 
+
         if(!passwordEncoder.matches(loginUserInfo.getPassword(),user.get().getPassword())){
             throw new BadRequestException(NOT_CORRECT_PASSWORD);
         }
+
+
 
 
 
@@ -77,5 +83,19 @@ public class UserServiceImpl implements UserService {
         user.get().updateToken(token);
 
         userRepository.save(user.get());
+    }
+
+    @Override
+    public UserRes.Token signUp(UserReq.SignupUser signupUser) {
+        Authority authority = UserConvertor.PostAuthroity();
+        String passwordEncoded=passwordEncoder.encode(signupUser.getPassword());
+
+        User user = UserConvertor.SignUpUser(signupUser,authority,passwordEncoded);
+
+        Long userId=userRepository.save(user).getId();
+
+        UserRes.GenerateToken token = createToken(userId);
+
+        return new UserRes.Token(userId,token.getAccessToken());
     }
 }

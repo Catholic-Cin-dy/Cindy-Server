@@ -2,11 +2,14 @@ package com.app.cindy.domain.product;
 
 import com.app.cindy.domain.BaseEntity;
 import com.app.cindy.domain.Category;
+import com.app.cindy.domain.user.User;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "Product")
@@ -51,8 +54,6 @@ public class Product extends BaseEntity {
 
     @Column(name="type")
     private String type;
-
-    //상하의 구분분
 
 
 

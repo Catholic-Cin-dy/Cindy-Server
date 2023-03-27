@@ -12,15 +12,31 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import java.io.IOException;
+
 import static com.app.cindy.constants.CommonResponseStatus.*;
 
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
     private final UserService userService;
 
+    @PostMapping(value = "/signup")
+    @ApiOperation(value = "01-01 임시 회원가입 🔑", notes = "")
+    public CommonResponse<UserRes.Token> signup(@RequestBody UserReq.SignupUser signupUser) throws IOException {
+
+
+        if(signupUser.getPassword()==null) throw new BadRequestException(USERS_EMPTY_USER_PASSWORD);
+        //if(userService.checkNickName(signupUser.getNickname())) throw new ForbiddenException(USERS_EXISTS_NICKNAME);
+
+
+        UserRes.Token signUp = userService.signUp(signupUser);
+
+        return CommonResponse.onSuccess(signUp);
+
+    }
 
     @ApiOperation(value = "로그인", notes = "로그인")
     @PostMapping("/login")
