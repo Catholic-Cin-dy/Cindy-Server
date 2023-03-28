@@ -25,15 +25,13 @@ public class CustomUserDetailsServiceImpl  implements UserDetailsService,CustomU
     @Override
     @Transactional
     public UserDetails loadUserByUsername(final String username) {
+        System.out.println(username);
         return userRepository.findOneWithAuthoritiesByUsername(username)
                 .map(user -> createUser(username, user))
                 .orElseThrow(() -> new UsernameNotFoundException(username + " -> 데이터베이스에서 찾을 수 없습니다."));
     }
 
     public org.springframework.security.core.userdetails.User createUser(String username, User user) {
-        if (!user.isStatus()) {
-            throw new RuntimeException(username + " -> 활성화되어 있지 않습니다.");
-        }
         List<GrantedAuthority> grantedAuthorities = user.getAuthorities().stream()
                 .map(authority -> new SimpleGrantedAuthority(authority.getAuthority()))
                 .collect(Collectors.toList());

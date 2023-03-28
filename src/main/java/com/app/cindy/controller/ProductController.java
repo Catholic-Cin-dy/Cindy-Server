@@ -10,10 +10,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Min;
 import java.util.List;
@@ -31,7 +28,27 @@ public class ProductController {
                                                                                      @Parameter(description = "페이지", example = "0") @RequestParam(required = false,defaultValue = "0" ) @Min(value = 0) Integer page,
                                                                                      @Parameter(description = "페이지 사이즈", example = "10") @RequestParam(required = false,defaultValue = "10")  Integer size,
                                                                                      @RequestParam(value = "filter",required = false,defaultValue="0") Integer filter) {
-        PageResponse<List<ProductRes.ProductList>> productList = productService.getProductList(filter,page,size,1L);
+        PageResponse<List<ProductRes.ProductList>> productList = productService.getProductList(filter,page,size,user.getId());
         return CommonResponse.onSuccess(productList);
     }
+
+    @GetMapping("/search")
+    @ApiOperation(value = "03-02 상품 검색 조회. 아직 구현 안했어요🏬 API Response #FRAME PRODUCT 01", notes = "")
+    public CommonResponse<PageResponse<List<ProductRes.ProductList>>> getProductListByContent(@AuthenticationPrincipal User user,
+                                                                                     @Parameter(description = "페이지", example = "0") @RequestParam(required = false,defaultValue = "0" ) @Min(value = 0) Integer page,
+                                                                                     @Parameter(description = "페이지 사이즈", example = "10") @RequestParam(required = false,defaultValue = "10")  Integer size,
+                                                                                     @RequestParam(value = "content",required = true) String content) {
+        PageResponse<List<ProductRes.ProductList>> productList = productService.getProductListByContent(content,page,size,user.getId());
+        return CommonResponse.onSuccess(productList);
+    }
+
+    @GetMapping("/{productId}}")
+    @ApiOperation(value = "03-03 상품 상세조회 API Response #FRAME PRODUCT 01", notes = "")
+    public CommonResponse<ProductRes.ProductDetail> getProductDetail(@AuthenticationPrincipal User user,
+                                                                     @PathVariable("productId") Long productId) {
+        ProductRes.ProductDetail productDetail = productService.getProductDetail(user.getId(),productId);
+        return CommonResponse.onSuccess(productDetail);
+    }
+
+
 }
