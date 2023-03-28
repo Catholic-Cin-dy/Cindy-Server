@@ -33,7 +33,7 @@ echo ">>> DEPLOY_JAR 배포"    >> /var/www/html/deploy.log
 chmod -R 777 $DEPLOY_JAR
 echo ">>>DEPLOY_JAR 권한 부여" >> /var/www/html/deploy.log
 
-nohup java -jar -Dspring.profiles.active=local $DEPLOY_JAR >> /var/www/html/deploy.log 2>/var/www/html/deploy_err.log &
+nohup java -jar $DEPLOY_JAR >> /var/www/html/deploy.log 2>/var/www/html/deploy_err.log &
 
 
 echo ">>>배포완료" >> /var/www/html/deploy.log
