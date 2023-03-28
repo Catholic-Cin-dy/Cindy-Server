@@ -57,11 +57,10 @@ public class ProductService {
     }
 
     public ProductRes.ProductDetail getProductDetail(Long id, Long productId) {
-        Product product = productRepository.findByIdAndStatus(productId,true).orElseThrow(() ->
+        ProductRepository.GetProductDetail product = productRepository.findByIdAndStatus(productId,id).orElseThrow(() ->
                 new BadRequestException(PRODUCT_NOT_FOUND));
 
-        System.out.println(Arrays.toString(product.getProductImg().toArray()));
-        ProductRes.ProductDetail productDetail = ProductConverter.convertToProductDetail(product,productLikeRepository.existsByProductIdAndUserId(productId,id));
+        ProductRes.ProductDetail productDetail = ProductConverter.convertToProductDetail(product);
 
         return productDetail;
     }
