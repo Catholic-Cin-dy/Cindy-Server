@@ -33,7 +33,6 @@ public class TokenProvider implements InitializingBean {
     private final UserRepository userRepository;
 
 
-    private static final String AUTHORITIES_KEY = "auth";
 
     private final String secret;
     private final long accessTime;

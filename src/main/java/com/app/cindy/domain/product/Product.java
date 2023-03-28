@@ -55,6 +55,11 @@ public class Product extends BaseEntity {
     @Column(name="type")
     private String type;
 
+    @OneToMany(mappedBy="id")
+    List<ProductImg> productImg =new ArrayList<>();
+
+    @OneToMany(mappedBy="product")
+    List<ProductLike> productLike =new ArrayList<>();
 
 
 }
