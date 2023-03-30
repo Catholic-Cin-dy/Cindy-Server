@@ -72,10 +72,8 @@ public class AuthService {
             JsonElement element = JsonParser.parseString(result.toString());
 
             access_Token = element.getAsJsonObject().get("access_token").getAsString();
-            refresh_Token = element.getAsJsonObject().get("refresh_token").getAsString();
 
             System.out.println("access_token : " + access_Token);
-            System.out.println("refresh_token : " + refresh_Token);
 
             br.close();
             bw.close();
@@ -122,10 +120,16 @@ public class AuthService {
 
 
             String profileImgUrl=element.getAsJsonObject().get("properties").getAsJsonObject().get("profile_image").getAsString();
+            String gender=element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("gender").getAsString();
+
 
             HashMap<String,String> kakao = new HashMap<String,String>();
             kakao.put("kakaoId",id.toString());
             kakao.put("profileImgUrl",profileImgUrl);
+            kakao.put("nickname",name);
+            kakao.put("gender",gender);
+
+
 
 
             //회원 존재 X -> 예외처리(카카오 id, 프로필 이미지)
