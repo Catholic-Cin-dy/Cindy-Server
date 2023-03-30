@@ -15,7 +15,8 @@ public class ProductConverter {
         return ProductRes.ProductDetail
                 .builder()
                 .productId(product.getProductId())
-                .productImg(Stream.of(product.getImgUrl().split(",")).collect(Collectors.toList()))
+                .imgUrl(product.getImgUrl())
+                .productUrl(product.getProductUrl())
                 .brandName(product.getBrandName())
                 .bookmark(product.getBookMark())
                 .productName(product.getName())

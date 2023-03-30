@@ -23,7 +23,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Page<GetProductList> findByCategoryId(@Param("categoryId") Long categoryId, @Param("userId") Long userId, Pageable pageable);
 
     @Query(value=
-            "select  P.id'productId',B.name'brandName',P.name, (select GROUP_CONCAT(PI.img_url SEPARATOR ',') from ProductImg PI where  P.id = PI.product_id )'imgUrl'," +
+            "select  P.id'productId',B.name'brandName',P.name,P.img_url'imgUrl',product_url'productUrl'," +
                     " IF((select exists(select * from ProductLike PL where PL.user_id=:userId and PL.product_id=P.id)),'true','false')'bookmark' " +
                     " from Product P " +
                     " join Brand B on B.id = P.brand_id" +
@@ -54,6 +54,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
         String getName();
         String getBrandName();
         String getImgUrl();
+        String getProductUrl();
         boolean getBookMark();
     }
 
