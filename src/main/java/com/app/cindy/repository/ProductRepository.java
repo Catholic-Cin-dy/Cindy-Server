@@ -22,7 +22,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                     " join Category C on C.id=P.category_id" +
                     " where P.category_id=:categoryId group by P.id" ,nativeQuery = true,
             countQuery = "select count(*) from Product P  where P.category_id=:categoryId ")
-    Page<GetProductList> findByCategoryId(@Param("categoryId") Long categoryId, @Param("userId") Long userId, Pageable pageable);
+    Page<GetProductList> findByCategoryId(@Param("userId") Long userId,@Param("categoryId") Long categoryId, Pageable pageable);
 
     @Query(value=
             "select  P.id'productId',B.name'brandName',P.name,P.img_url'imgUrl',product_url'productUrl'," +
