@@ -44,13 +44,16 @@ public class ProductController {
         return CommonResponse.onSuccess(productList);
     }
 
+    /*
     @GetMapping("/{productId}}")
-    @ApiOperation(value = "03-03 상품 상세조회 API Response #FRAME PRODUCT 02", notes = "")
+    @ApiOperation(value = "03-03 상품 상세조회🏬 API Response #FRAME PRODUCT 02", notes = "")
     public CommonResponse<ProductRes.ProductDetail> getProductDetail(@AuthenticationPrincipal User user,
                                                                      @PathVariable("productId") Long productId) {
         ProductRes.ProductDetail productDetail = productService.getProductDetail(user.getId(),productId);
         return CommonResponse.onSuccess(productDetail);
     }
+
+     */
 
     @GetMapping("/other/{productId}")
     @ApiOperation(value = "03-04 다른 사람이 본 상품 리스트 조회🏬 API Response #FRAME PRODUCT 02", notes = "")

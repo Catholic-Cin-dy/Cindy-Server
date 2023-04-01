@@ -51,6 +51,15 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                     "" ,nativeQuery = true)
     List<GetProductList> getProductOtherList(@Param("productIds") List<Long> productIds,@Param("userId") Long userId);
 
+    @Query(value=
+            "select  P.id'productId',B.name'brandName',P.name,P.img_url'imgUrl'," +
+                    " IF((select exists(select * from ProductLike PL where PL.user_id=:userId and PL.product_id=P.id)),'true','false')'bookmark' " +
+                    " from Product P " +
+                    " join Brand B on B.id = P.brand_id " +
+                    " join Category C on C.id=P.category_id where brand_id=:brandId and category_id=:categoryId group by P.id limit 10 " +
+                    "" ,nativeQuery = true)
+    List<GetProductList> findProductBrand(@Param("brandId") Long brandId,@Param("categoryId") Long categoryId,@Param("userId") Long userId);
+
     //List<GetProductList> getProductViewingList(Long userId, List<Long> productIds);
 
     interface GetProductList {

@@ -49,7 +49,7 @@ public class ProductRes {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "03-01,04 상품 리스트 조회 🏬 API Response #FRAME PRODUCT 01,02")
+    @ApiModel(value = "03-01,04,05 상품 리스트 조회 🏬 API Response #FRAME PRODUCT 01,02")
     public static class ProductList{
         @ApiModelProperty(notes ="상품 ID", required = true, example = "1")
         private Long productId;
@@ -61,7 +61,5 @@ public class ProductRes {
         private String imgUrl;
         @ApiModelProperty(notes ="북마크 유무", required = true, example = "true")
         private boolean bookmark;
-
-
     }
 }

@@ -92,7 +92,21 @@ public class ProductService {
 
         List<ProductRes.ProductList> productList= new ArrayList<>();
 
+        List<ProductRepository.GetProductList> products = productRepository.findProductBrand(product.getBrandId(),product.getCategoryId(),userId);
 
-        return null;
+        products.forEach(
+                result -> productList.add(
+                        new ProductRes.ProductList(
+                                result.getProductId(),
+                                result.getBrandName(),
+                                result.getName(),
+                                result.getImgUrl(),
+                                result.getBookMark()
+                        )
+                )
+        );
+
+
+        return productList;
     }
 }
