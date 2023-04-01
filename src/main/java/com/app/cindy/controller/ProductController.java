@@ -5,6 +5,7 @@ import com.app.cindy.domain.user.User;
 import com.app.cindy.dto.PageResponse;
 import com.app.cindy.dto.product.ProductRes;
 import com.app.cindy.service.ProductService;
+import com.app.cindy.service.RedisService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,6 +21,7 @@ import java.util.List;
 @Api(tags = "03-상품 🏬 API")
 @RequestMapping("/products")
 public class ProductController {
+    private final RedisService redisService;
     private final ProductService productService;
 
     @GetMapping("")
@@ -43,12 +45,37 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}}")
-    @ApiOperation(value = "03-03 상품 상세조회 API Response #FRAME PRODUCT 01", notes = "")
+    @ApiOperation(value = "03-03 상품 상세조회 API Response #FRAME PRODUCT 02", notes = "")
     public CommonResponse<ProductRes.ProductDetail> getProductDetail(@AuthenticationPrincipal User user,
                                                                      @PathVariable("productId") Long productId) {
         ProductRes.ProductDetail productDetail = productService.getProductDetail(user.getId(),productId);
         return CommonResponse.onSuccess(productDetail);
     }
+
+    @GetMapping("/other/{productId}")
+    @ApiOperation(value = "03-04 다른 사람이 본 상품 리스트 조회🏬 API Response #FRAME PRODUCT 02", notes = "")
+    public CommonResponse<List<ProductRes.ProductList>> getProductOtherList(@AuthenticationPrincipal User user,
+                                                                            @Parameter(description = "상품 id", example = "10") @PathVariable("productId") Long productId){
+        Long userId= user.getId();
+        List<Long> productIds = redisService.getRecentlyViewedProducts(String.valueOf(userId), String.valueOf(productId));
+        System.out.println(productIds);
+
+        List<ProductRes.ProductList> productList=productService.getProductOtherList(productIds,userId);
+
+        return CommonResponse.onSuccess(productList);
+    }
+
+    @GetMapping("/brand/{productId}")
+    @ApiOperation(value = "03-05 같은 브랜드 상품 조회 🏬 API Response #FRAME PRODUCT 02", notes = "")
+    public CommonResponse<List<ProductRes.ProductList>> getProductBrandList(@AuthenticationPrincipal User user,
+                                                                            @Parameter(description = "상품 id", example = "10") @PathVariable("productId") Long productId){
+        Long userId= user.getId();
+
+        List<ProductRes.ProductList> productList=productService.getProductBrandList(productId,userId);
+
+        return CommonResponse.onSuccess(productList);
+    }
+
 
 
 }

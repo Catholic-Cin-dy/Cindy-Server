@@ -5,7 +5,6 @@ import com.app.cindy.domain.product.Product;
 import com.app.cindy.dto.PageResponse;
 import com.app.cindy.dto.product.ProductRes;
 import com.app.cindy.exception.BadRequestException;
-import com.app.cindy.exception.BaseException;
 import com.app.cindy.repository.ProductLikeRepository;
 import com.app.cindy.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,23 +14,24 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.app.cindy.constants.CommonResponseStatus.PRODUCT_NOT_FOUND;
-import static com.app.cindy.constants.CommonResponseStatus.USER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
     private final ProductLikeRepository productLikeRepository;
+    private final RedisService redisService;
+
+
     public PageResponse<List<ProductRes.ProductList>> getProductList(int filter, Integer page, Integer size,Long userId) {
         Pageable pageReq = PageRequest.of(page, size);
         List<ProductRes.ProductList> productList=new ArrayList<>();
         Page<ProductRepository.GetProductList> product = null;
         if(filter==0){
-            product=productRepository.findAllFetchJoin(userId,pageReq);
+            product=productRepository.findAllCategory(userId,pageReq);
         }else{
             product=productRepository.findByCategoryId(userId,(long) filter,pageReq);
         }
@@ -60,8 +60,39 @@ public class ProductService {
         ProductRepository.GetProductDetail product = productRepository.findByIdAndStatus(productId,id).orElseThrow(() ->
                 new BadRequestException(PRODUCT_NOT_FOUND));
 
-        ProductRes.ProductDetail productDetail = ProductConverter.convertToProductDetail(product);
+        redisService.addToViewingHistory(String.valueOf(id), String.valueOf(productId));
 
-        return productDetail;
+
+        return ProductConverter.convertToProductDetail(product);
+    }
+
+    public List<ProductRes.ProductList> getProductOtherList(List<Long> productIds, Long userId) {
+        List<ProductRes.ProductList> productList = new ArrayList<>();
+
+        List<ProductRepository.GetProductList> otherProduct=productRepository.getProductOtherList(productIds,userId);
+
+        otherProduct.forEach(
+                result-> productList.add(new ProductRes.ProductList(
+                        result.getProductId(),
+                        result.getBrandName(),
+                        result.getName(),
+                        result.getImgUrl(),
+                        result.getBookMark()
+                )
+                )
+        );
+
+        return productList;
+
+    }
+
+    public List<ProductRes.ProductList> getProductBrandList(Long productId, Long userId) {
+        Product product = productRepository.findById(productId).orElseThrow(() ->
+                new BadRequestException(PRODUCT_NOT_FOUND));
+
+        List<ProductRes.ProductList> productList= new ArrayList<>();
+
+
+        return null;
     }
 }

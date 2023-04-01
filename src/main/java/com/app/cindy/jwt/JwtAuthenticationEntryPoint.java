@@ -1,5 +1,6 @@
 package com.app.cindy.jwt;
 
+import com.app.cindy.constants.CommonResponseStatus;
 import org.json.JSONObject;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -20,14 +21,14 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         // 유효한 자격증명을 제공하지 않고 접근하려 할때 401
         String exception = (String) request.getAttribute("exception");
 
-        JwtErrorCode errorCode;
+        CommonResponseStatus errorCode;
 
 
         /**
          * 토큰이 없는 경우 예외처리
          */
-        if(exception == null) {
-            errorCode = JwtErrorCode.UNAUTHORIZEDException;
+        if (exception == null) {
+            errorCode = CommonResponseStatus.UNAUTHORIZED_EXCEPTION;
             setResponse(response, errorCode);
             return;
         }
@@ -35,33 +36,34 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         /**
          * 토큰이 만료된 경우 예외처리
          */
-        if(exception.equals("ExpiredJwtException")) {
-            errorCode = JwtErrorCode.ExpiredJwtException;
+        if (exception.equals("NotExistUser")) {
+            errorCode = CommonResponseStatus.NOT_EXIST_USER;
             setResponse(response, errorCode);
             return;
-        }
-        else if (exception.equals("MalformedJwtException")){
-            errorCode= JwtErrorCode.InvalidToken;
-            setResponse(response,errorCode);
+        } else if (exception.equals("ExpiredJwtException")) {
+            errorCode = CommonResponseStatus.EXPIRED_JWT_EXCEPTION;
+            setResponse(response, errorCode);
             return;
-        }
-        else if(exception.equals("HijackException")){
-            errorCode =JwtErrorCode.HijackJwtToken;
-            setResponse(response,errorCode);
+        } else if (exception.equals("MalformedJwtException")) {
+            errorCode = CommonResponseStatus.INVALID_TOKEN_EXCEPTION;
+            setResponse(response, errorCode);
+            return;
+        } else if (exception.equals("HijackException")) {
+            errorCode = CommonResponseStatus.HIJACK_JWT_TOKEN_EXCEPTION;
+            setResponse(response, errorCode);
             return;
         }
     }
 
-    private void setResponse(HttpServletResponse response, JwtErrorCode errorCode) throws IOException {
+    private void setResponse(HttpServletResponse response, CommonResponseStatus errorCode) throws IOException {
         JSONObject json = new JSONObject();
         response.setContentType("application/json;charset=UTF-8");
         response.setCharacterEncoding("utf-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
-
-        json.put("isSuccess",false);
         json.put("code", errorCode.getCode());
         json.put("message", errorCode.getMessage());
+        json.put("isSuccess", false);
         response.getWriter().print(json);
     }
 }

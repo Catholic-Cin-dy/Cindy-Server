@@ -7,7 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
@@ -35,10 +37,21 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                     " IF((select exists(select * from ProductLike PL where PL.user_id=:userId and PL.product_id=P.id)),'true','false')'bookmark' " +
                     " from Product P " +
                     " join Brand B on B.id = P.brand_id " +
-                    " join Category C on C.id=P.category_id group by P.id" +
+                    " join Category C on C.id=P.category_id group by P.id " +
                     "" ,nativeQuery = true,
             countQuery = "select count(*) from Product P ")
-    Page<GetProductList> findAllFetchJoin(@Param("userId") Long userId, Pageable pageable);
+    Page<GetProductList> findAllCategory(@Param("userId") Long userId, Pageable pageable);
+
+    @Query(value=
+            "select  P.id'productId',B.name'brandName',P.name,P.img_url'imgUrl'," +
+                    " IF((select exists(select * from ProductLike PL where PL.user_id=:userId and PL.product_id=P.id)),'true','false')'bookmark' " +
+                    " from Product P " +
+                    " join Brand B on B.id = P.brand_id " +
+                    " join Category C on C.id=P.category_id where P.id IN(:productIds) group by P.id " +
+                    "" ,nativeQuery = true)
+    List<GetProductList> getProductOtherList(@Param("productIds") List<Long> productIds,@Param("userId") Long userId);
+
+    //List<GetProductList> getProductViewingList(Long userId, List<Long> productIds);
 
     interface GetProductList {
         Long getProductId();
