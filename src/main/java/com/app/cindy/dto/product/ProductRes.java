@@ -49,7 +49,7 @@ public class ProductRes {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "03-01 상품 리스트 조회 🏬 API Response #FRAME PRODUCT 01")
+    @ApiModel(value = "03-01,04 상품 리스트 조회 🏬 API Response #FRAME PRODUCT 01,02")
     public static class ProductList{
         @ApiModelProperty(notes ="상품 ID", required = true, example = "1")
         private Long productId;
