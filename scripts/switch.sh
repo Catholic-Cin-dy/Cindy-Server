@@ -1,7 +1,8 @@
-#!/usr/bin bash
+#!/usr/bin/env bash
+
 
 echo "> 현재 구동중인  Port 확인" >> /var/www/html/deploy.log
-CURRENT_PROFILE=$(curl -s http://localhost/profile)
+CURRENT_PROFILE=$(curl -s https://www.awesominki.shop/profile)
 
 if [ $CURRENT_PROFILE == dev ]
 then
@@ -17,9 +18,9 @@ fi
 
 echo "> 전환할 Port: $IDLE_PORT" >> /var/www/html/deploy.log
 echo "> Port 전환" >> /var/www/html/deploy.log
-echo "set \$service_url http://127.0.0.1:${IDLE_PORT};" |sudo tee /etc/nginx/conf.d/service-url.inc >> /var/www/html/deploy.log
+echo "set \$service_url http://127.0.0.1:${IDLE_PORT};" |sudo tee /etc/nginx/conf.d/service-url.inc
 
-PROXY_PORT=$(curl -s http://localhost/profile)
+PROXY_PORT=$(curl -s https://www.awesominki.shop/profile)
 echo "> Nginx Current Proxy Port: $PROXY_PORT" >> /var/www/html/deploy.log
 
 echo "> Nginx Reload"

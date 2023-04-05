@@ -1,7 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
 
 BUILD_JAR=$(ls /var/www/html/build/libs/*.jar)
-JAR_NAME=$(basename $BUILD_JAR)
+JAR_NAME=cindy-server-0.0.1-SNAPSHOT.jar
 echo ">>> build 파일명: $JAR_NAME" >> /var/www/html/deploy.log
 
 
@@ -10,7 +11,7 @@ DEPLOY_PATH=/var/www/html/build/libs/
 cp $BUILD_JAR $DEPLOY_PATH
 
 echo ">>> 현재 실행중인 애플리케이션 Set 확인" >> /var/www/html/deploy.log
-CURRENT_PROFILE=$(curl -s http://localhost/profile)
+CURRENT_PROFILE=$(curl -s https://www.awesominki.shop/profile)
 echo ">>> 현재 실행중인 프로필 $CURRENT_PROFILE" >> /var/www/html/deploy.log
 
 
@@ -30,7 +31,7 @@ else
 fi
 
 echo "> application.jar 교체" >> /var/www/html/deploy.log
-IDLE_APPLICATION=$IDLE_PROFILE-demo.jar
+IDLE_APPLICATION=cindy-server-0.0.1-SNAPSHOT.jar
 IDLE_APPLICATION_PATH=$DEPLOY_PATH$IDLE_APPLICATION
 
 # 미연결된 Jar로 신규 Jar 심볼릭 링크 (ln)
@@ -57,5 +58,10 @@ nohup java -jar -Dspring.profiles.active=$IDLE_PROFILE $DEPLOY_JAR >> /var/www/h
 
 # Nginx Port 스위칭을 위한 스크립트
 echo "> 스위칭" >> /var/www/html/deploy.log
-sleep 10
-/var/www/scripts/switch.sh
+sleep 5
+
+/var/www/html/scripts/switch.sh
+
+echo "> 스위칭 실행완료" >> /var/www/html/deploy.log
+
+
