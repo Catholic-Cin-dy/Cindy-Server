@@ -1,4 +1,5 @@
-#!/usr/bin bash
+#!/usr/bin/env bash
+
 
 echo "> 현재 구동중인  Port 확인" >> /var/www/html/deploy.log
 CURRENT_PROFILE=$(curl -s https://www.awesominki.shop/profile)
