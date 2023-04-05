@@ -58,4 +58,4 @@ nohup java -jar -Dspring.profiles.active=$IDLE_PROFILE $DEPLOY_JAR >> /var/www/h
 # Nginx Port 스위칭을 위한 스크립트
 echo "> 스위칭" >> /var/www/html/deploy.log
 sleep 10
-/var/www/scripts/switch.sh
+/var/www/html/scripts/switch.sh
