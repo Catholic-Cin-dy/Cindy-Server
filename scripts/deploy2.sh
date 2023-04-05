@@ -30,24 +30,9 @@ else
   IDLE_PORT=9000
 fi
 
-echo "> application.jar 교체" >> /var/www/html/deploy.log
-IDLE_APPLICATION=cindy-server-0.0.1-SNAPSHOT.jar
-IDLE_APPLICATION_PATH=$DEPLOY_PATH$IDLE_APPLICATION
 
-# 미연결된 Jar로 신규 Jar 심볼릭 링크 (ln)
-ln -Tfs $DEPLOY_PATH$JAR_NAME $IDLE_APPLICATION_PATH
 
 echo "> $IDLE_PROFILE 에서 구동중인 애플리케이션 pid 확인" >> /var/www/html/deploy.log
-IDLE_PID=$(pgrep -f $IDLE_APPLICATION)
-
-if [ -z $IDLE_PID ]
-then
-  echo "> 현재 구동중인 애플리케이션이 없으므로 종료하지 않습니다." >> /var/www/html/deploy.log
-else
-  echo "> kill -15 $IDLE_PID"
-  kill -15 $IDLE_PID
-  sleep 5
-fi
 
 
 DEPLOY_JAR=$DEPLOY_PATH$JAR_NAME
@@ -58,6 +43,6 @@ nohup java -jar -Dspring.profiles.active=$IDLE_PROFILE $DEPLOY_JAR >> /var/www/h
 
 # Nginx Port 스위칭을 위한 스크립트
 echo "> 스위칭" >> /var/www/html/deploy.log
-sleep 5
+sleep 10
 
 
