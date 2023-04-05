@@ -26,4 +26,11 @@ public class HomeController {
         List<HomeRes.HomeBanner> homeBannerList = homeService.getHomeBannerList();
         return CommonResponse.onSuccess(homeBannerList);
     }
+
+    @GetMapping("/new")
+    @ApiOperation(value = "02-03 신상 상품 전체 조회 🏠", notes = "")
+    public CommonResponse<List<HomeRes.HomeNewProduct>> getNewProductList(@AuthenticationPrincipal User user){
+        List<HomeRes.HomeNewProduct> homeNewProductList = homeService.getNewProductList();
+        return CommonResponse.onSuccess(homeNewProductList);
+    }
 }
