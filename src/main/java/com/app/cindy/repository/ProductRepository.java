@@ -9,7 +9,6 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
@@ -64,7 +63,14 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<GetNewProductList> findNewProduct();
 
 
-//    List<GetRecommendProductList> findRecommendProduct();
+    @Query(value="select P.id'productId', B.name'brand', P.name'productName', P.img_url'productImgUrl'\n" +
+            "     , SUM(CASE WHEN P.category_id IN (:userCategoryList) THEN 1 ELSE 0 END) AS categoryScore\n" +
+            "from Product P\n" +
+            "join Brand B on P.brand_id = B.id\n" +
+            "join User U on P.gender = U.gender\n" +
+            "group by P.id\n" +
+            "order by categoryScore desc LIMIT 30",nativeQuery = true)
+    List<GetRecommendProductList> findRecommendProduct(List<Long> userCategoryList);
 
     //List<GetProductList> getProductViewingList(Long userId, List<Long> productIds);
 
@@ -84,11 +90,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
         String getProductImgUrl();
     }
 
-//    interface GetRecommendProductList{
-//        String getBrand();
-//        String getProductName();
-//        String getProductImgUrl();
-//    }
+    interface GetRecommendProductList{
+        int getProductId();
+        String getBrand();
+        String getProductName();
+        String getProductImgUrl();
+    }
 
     interface GetProductDetail {
         Long getProductId();

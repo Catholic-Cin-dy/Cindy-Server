@@ -24,22 +24,24 @@ public class HomeRes {
         private String bannerUrl;
 
     }
-//    @Getter
-//    @Setter
-//    @Builder
-//    @AllArgsConstructor
-//    @NoArgsConstructor
-//    @ApiModel(value = "02-02 추천 상품 조회 🏠")
-//    public static class HomeRecommendProduct{
-//        @ApiModelProperty(notes ="브랜드", required = true, example = "프라다")
-//        private String brand;
-//
-//        @ApiModelProperty(notes ="상품명", required = true, example = "스몰 나파 가죽")
-//        private String productName;
-//
-//        @ApiModelProperty(notes ="상품 이미지 url", required = true, example = "상품 이미지 url")
-//        private String productImgUrl;
-//    }
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ApiModel(value = "02-02 추천 상품 조회 🏠")
+    public static class HomeRecommendProduct{
+        @ApiModelProperty(notes ="상품 id", required = true, example = "1")
+        private int productId;
+        @ApiModelProperty(notes ="브랜드", required = true, example = "프라다")
+        private String brand;
+
+        @ApiModelProperty(notes ="상품명", required = true, example = "스몰 나파 가죽")
+        private String productName;
+
+        @ApiModelProperty(notes ="상품 이미지 url", required = true, example = "상품 이미지 url")
+        private String productImgUrl;
+    }
 
     @Getter
     @Setter

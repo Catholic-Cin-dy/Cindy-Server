@@ -55,6 +55,11 @@ public class LoginService {
 
         profileImgUrl = socialSignUp.getProfileImgUrl();
 
+        if(socialSignUp.getGender().equals("male"))
+            socialSignUp.setGender("남자");
+        else
+            socialSignUp.setGender("여자");
+
         User user = UserConvertor.SignUpSocialUser(socialSignUp,authority,passwordEncoded,profileImgUrl);
 
 
