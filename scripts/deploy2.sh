@@ -49,11 +49,10 @@ else
 fi
 
 
-DEPLOY_JAR=$DEPLOY_PATH$JAR_NAME
 
 
 echo "> $IDLE_PROFILE 배포" >> /var/www/html/deploy.log
-nohup java -jar -Dspring.profiles.active=$IDLE_PROFILE $DEPLOY_JAR >> /var/www/html/deploy.log 2>/var/www/html/deploy_err.log &
+nohup java -jar -Dspring.profiles.active=$IDLE_PROFILE $IDLE_APPLICATION_PATH >> /var/www/html/deploy.log 2>/var/www/html/deploy_err.log &
 
 # Nginx Port 스위칭을 위한 스크립트
 echo "> 스위칭" >> /var/www/html/deploy.log
