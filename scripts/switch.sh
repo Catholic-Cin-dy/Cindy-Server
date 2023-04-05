@@ -25,3 +25,5 @@ echo "> Nginx Current Proxy Port: $PROXY_PORT" >> /var/www/html/deploy.log
 
 echo "> Nginx Reload"
 sudo service nginx reload # reload는 설정만 재적용하기 때문에 바로 적용이 가능합니다.
+
+echo "> 스위칭 실행완료" >> /var/www/html/deploy.log
