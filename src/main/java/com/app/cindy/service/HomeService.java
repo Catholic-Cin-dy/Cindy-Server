@@ -42,6 +42,7 @@ public class HomeService {
         newProduct.forEach(
                 result -> newProductList.add(
                         new HomeRes.HomeNewProduct(
+                                result.getProductId(),
                                 result.getBrand(),
                                 result.getProductName(),
                                 result.getProductImgUrl()
@@ -51,4 +52,12 @@ public class HomeService {
 
         return newProductList;
     }
+
+//    public List<HomeRes.HomeRecommendProduct> getRecommendProductList() {
+//        List<HomeRes.HomeRecommendProduct> recommendProductList = new ArrayList<>();
+//        List<ProductRepository.GetRecommendProductList> recommendProduct = null;
+//        recommendProduct=productRepository.findRecommendProduct();
+//
+//        return recommendProductList;
+//    }
 }
