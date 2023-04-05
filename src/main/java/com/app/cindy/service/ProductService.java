@@ -1,10 +1,13 @@
 package com.app.cindy.service;
 
 import com.app.cindy.convertor.ProductConverter;
+import com.app.cindy.domain.pk.ProductLikePk;
 import com.app.cindy.domain.product.Product;
+import com.app.cindy.domain.product.ProductLike;
 import com.app.cindy.dto.PageResponse;
 import com.app.cindy.dto.product.ProductRes;
 import com.app.cindy.exception.BadRequestException;
+import com.app.cindy.exception.ForbiddenException;
 import com.app.cindy.repository.ProductLikeRepository;
 import com.app.cindy.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.app.cindy.constants.CommonResponseStatus.DATABASE_ERROR;
 import static com.app.cindy.constants.CommonResponseStatus.PRODUCT_NOT_FOUND;
 
 @Service
@@ -108,5 +112,31 @@ public class ProductService {
 
 
         return productList;
+    }
+
+    public boolean existsProductLike(Long userId, Long productId) {
+        try {
+            return productLikeRepository.existsByProductIdAndUserId(productId, userId);
+        }catch(Exception e){
+            throw new ForbiddenException(DATABASE_ERROR);
+        }
+    }
+
+    public void deleteProductLike(Long userId, Long productId) {
+        try{
+            productLikeRepository.deleteByProductIdAndUserId(productId,userId);
+        }catch(Exception e){
+            throw new ForbiddenException(DATABASE_ERROR);
+        }
+    }
+
+    public void postProductLike(Long userId, Long productId) {
+        try{
+            ProductLike productLike = ProductLike.builder().id(new ProductLikePk(userId,productId)).build();
+            productLikeRepository.save(productLike);
+        }catch(Exception e){
+            throw new ForbiddenException(DATABASE_ERROR);
+        }
+
     }
 }
