@@ -1,9 +1,14 @@
 package com.app.cindy.service;
 
 import com.app.cindy.domain.Banner;
+import com.app.cindy.domain.Category;
+import com.app.cindy.domain.user.User;
+import com.app.cindy.domain.user.UserCategory;
 import com.app.cindy.dto.home.HomeRes;
 import com.app.cindy.repository.BannerRepository;
 import com.app.cindy.repository.ProductRepository;
+import com.app.cindy.repository.UserCategoryRepository;
+import com.app.cindy.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +20,12 @@ import java.util.List;
 public class HomeService {
     private final BannerRepository bannerRepository;
     private final ProductRepository productRepository;
+
+    private final UserCategoryRepository userCategoryRepository;
+
+    private final UserRepository userRepository;
+
+    private final UserService userService;
 
     public List<HomeRes.HomeBanner> getHomeBannerList(){
         List<HomeRes.HomeBanner> bannerList = new ArrayList<>();
@@ -53,11 +64,24 @@ public class HomeService {
         return newProductList;
     }
 
-//    public List<HomeRes.HomeRecommendProduct> getRecommendProductList() {
-//        List<HomeRes.HomeRecommendProduct> recommendProductList = new ArrayList<>();
-//        List<ProductRepository.GetRecommendProductList> recommendProduct = null;
-//        recommendProduct=productRepository.findRecommendProduct();
-//
-//        return recommendProductList;
-//    }
+    public List<HomeRes.HomeRecommendProduct> getRecommendProductList(Long userId) {
+        List<HomeRes.HomeRecommendProduct> recommendProductList = new ArrayList<>();
+        List<ProductRepository.GetRecommendProductList> recommendProduct = null;
+        List<Long> userCategoryList = userService.getCategoryList(userId);
+
+        recommendProduct=productRepository.findRecommendProduct(userCategoryList);
+
+        recommendProduct.forEach(
+                result -> recommendProductList.add(
+                        new HomeRes.HomeRecommendProduct(
+                                result.getProductId(),
+                                result.getBrand(),
+                                result.getProductName(),
+                                result.getProductImgUrl()
+                        )
+                )
+        );
+
+        return recommendProductList;
+    }
 }
