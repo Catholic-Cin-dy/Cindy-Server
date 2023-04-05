@@ -11,4 +11,5 @@ public interface UserCategoryRepository extends JpaRepository<UserCategory, Long
     @Transactional
     void deleteByIdUserId(Long userId);
 
+    List<UserCategory> findByUserId(Long userId);
 }

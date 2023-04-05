@@ -2,6 +2,8 @@ package com.app.cindy.service;
 
 import com.app.cindy.convertor.UserConvertor;
 import com.app.cindy.domain.Authority;
+import com.app.cindy.domain.user.UserCategory;
+import com.app.cindy.repository.UserCategoryRepository;
 import com.app.cindy.repository.UserRepository;
 import com.app.cindy.domain.user.User;
 import com.app.cindy.dto.UserReq;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.app.cindy.constants.CommonResponseStatus.NOT_CORRECT_PASSWORD;
 import static com.app.cindy.constants.CommonResponseStatus.NOT_EXIST_USER;
@@ -26,6 +29,8 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
+
+    private final UserCategoryRepository userCategoryRepository;
 
 
 
@@ -97,5 +102,11 @@ public class UserServiceImpl implements UserService {
         UserRes.GenerateToken token = createToken(userId);
 
         return new UserRes.Token(userId,token.getAccessToken());
+    }
+
+    @Override
+    public List<Long> getCategoryList(Long userId) {
+        List<UserCategory> category=userCategoryRepository.findByUserId(userId);
+        return category.stream().map(e-> e.getId().getCategoryId()).collect(Collectors.toList());
     }
 }
