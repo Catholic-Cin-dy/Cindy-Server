@@ -39,3 +39,5 @@ out/
 **/resources/application.properties
 
 application.properties
+application-dev.properties
+application-dev2.properties
