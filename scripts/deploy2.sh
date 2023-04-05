@@ -1,7 +1,7 @@
 #!/bin/bash
 
 BUILD_JAR=$(ls /var/www/html/build/libs/*.jar)
-JAR_NAME=$(basename $BUILD_JAR)
+JAR_NAME=cindy-server-0.0.1-SNAPSHOT.jar
 echo ">>> build 파일명: $JAR_NAME" >> /var/www/html/deploy.log
 
 
@@ -30,7 +30,7 @@ else
 fi
 
 echo "> application.jar 교체" >> /var/www/html/deploy.log
-IDLE_APPLICATION=$IDLE_PROFILE-demo.jar
+IDLE_APPLICATION=cindy-server-0.0.1-SNAPSHOT.jar
 IDLE_APPLICATION_PATH=$DEPLOY_PATH$IDLE_APPLICATION
 
 # 미연결된 Jar로 신규 Jar 심볼릭 링크 (ln)
@@ -49,12 +49,17 @@ else
 fi
 
 
+DEPLOY_JAR=$DEPLOY_PATH$JAR_NAME
 
 
 echo "> $IDLE_PROFILE 배포" >> /var/www/html/deploy.log
-nohup java -jar -Dspring.profiles.active=$IDLE_PROFILE $IDLE_APPLICATION_PATH >> /var/www/html/deploy.log 2>/var/www/html/deploy_err.log &
+nohup java -jar -Dspring.profiles.active=$IDLE_PROFILE $DEPLOY_JAR >> /var/www/html/deploy.log 2>/var/www/html/deploy_err.log &
 
 # Nginx Port 스위칭을 위한 스크립트
 echo "> 스위칭" >> /var/www/html/deploy.log
-sleep 10
+sleep 5
 /var/www/html/scripts/switch.sh
+
+echo "> 스위칭 실행완료" >> /var/www/html/deploy.log
+
+
