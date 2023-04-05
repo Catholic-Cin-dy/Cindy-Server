@@ -10,7 +10,7 @@ DEPLOY_PATH=/var/www/html/build/libs/
 cp $BUILD_JAR $DEPLOY_PATH
 
 echo ">>> 현재 실행중인 애플리케이션 Set 확인" >> /var/www/html/deploy.log
-CURRENT_PROFILE=$(curl -s http://localhost/profile)
+CURRENT_PROFILE=$(curl -s https://www.awesominki.shop/profile)
 echo ">>> 현재 실행중인 프로필 $CURRENT_PROFILE" >> /var/www/html/deploy.log
 
 
