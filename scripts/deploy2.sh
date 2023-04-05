@@ -60,8 +60,5 @@ nohup java -jar -Dspring.profiles.active=$IDLE_PROFILE $DEPLOY_JAR >> /var/www/h
 echo "> 스위칭" >> /var/www/html/deploy.log
 sleep 5
 
-/var/www/html/scripts/switch.sh
-
-echo "> 스위칭 실행완료" >> /var/www/html/deploy.log
 
 
