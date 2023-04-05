@@ -18,12 +18,12 @@ fi
 
 echo "> 전환할 Port: $IDLE_PORT" >> /var/www/html/deploy.log
 echo "> Port 전환" >> /var/www/html/deploy.log
-echo "set \$service_url http://127.0.0.1:${IDLE_PORT};" |sudo tee /etc/nginx/conf.d/service-url.inc
+echo "set \$service_url http://127.0.0.1:$IDLE_PORT;" |sudo tee /etc/nginx/conf.d/service_url.inc
 
 PROXY_PORT=$(curl -s https://www.awesominki.shop/profile)
-echo "> Nginx Current Proxy Port: $PROXY_PORT" >> /var/www/html/deploy.log
+echo ">>> Nginx Current Proxy Port: $PROXY_PORT" >> /var/www/html/deploy.log
 
-echo "> Nginx Reload" >> /var/www/html/deploy.log
+echo ">>> Nginx Reload" >> /var/www/html/deploy.log
 sudo service nginx reload # reload는 설정만 재적용하기 때문에 바로 적용이 가능합니다.
 
 
