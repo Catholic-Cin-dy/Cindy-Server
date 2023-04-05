@@ -42,9 +42,6 @@ public class UserConvertor {
     public static UserRes.SignUp SignUpUserRes(UserRes.GenerateToken token, User user, List<String> categoryList) {
         return UserRes.SignUp.builder().userId(user.getId())
                 .accessToken(token.getAccessToken())
-                .imgUrl(user.getProfileImgUrl())
-                .nickname(user.getNickname())
-                .categoryList(categoryList)
                 .build();
     }
 }

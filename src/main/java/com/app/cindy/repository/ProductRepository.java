@@ -60,8 +60,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                     "" ,nativeQuery = true)
     List<GetProductList> findProductBrand(@Param("brandId") Long brandId,@Param("categoryId") Long categoryId,@Param("userId") Long userId);
 
-    @Query(value="select B.name'brand', P.name'productName', P.img_url'productImgUrl' from Product P join Brand B on P.brand_id = B.id order by created_at desc LIMIT 30;" ,nativeQuery = true)
+    @Query(value="select P.id'productId', B.name'brand', P.name'productName', P.img_url'productImgUrl' from Product P join Brand B on P.brand_id = B.id order by created_at desc LIMIT 30;" ,nativeQuery = true)
     List<GetNewProductList> findNewProduct();
+
+
+//    List<GetRecommendProductList> findRecommendProduct();
 
     //List<GetProductList> getProductViewingList(Long userId, List<Long> productIds);
 
@@ -75,10 +78,17 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     }
 
     interface GetNewProductList{
+        int getProductId();
         String getBrand();
         String getProductName();
         String getProductImgUrl();
     }
+
+//    interface GetRecommendProductList{
+//        String getBrand();
+//        String getProductName();
+//        String getProductImgUrl();
+//    }
 
     interface GetProductDetail {
         Long getProductId();
