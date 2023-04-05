@@ -35,6 +35,7 @@ public class HomeService {
         banner.forEach(
                 result -> bannerList.add(
                         new HomeRes.HomeBanner(
+                                result.getId(),
                             result.getTitle(),
                             result.getContent(),
                             result.getImgUrl()
