@@ -26,4 +26,19 @@ public class HomeController {
         List<HomeRes.HomeBanner> homeBannerList = homeService.getHomeBannerList();
         return CommonResponse.onSuccess(homeBannerList);
     }
+
+    @GetMapping("/recommend")
+    @ApiOperation(value = "02-02 추천 상품 조회 🏠", notes = "")
+    public CommonResponse<List<HomeRes.HomeRecommendProduct>> getRecommendProductList(@AuthenticationPrincipal User user){
+        Long userId= user.getId();
+        List<HomeRes.HomeRecommendProduct> RecommendProductList = homeService.getRecommendProductList(userId);
+        return CommonResponse.onSuccess(RecommendProductList);
+    }
+
+    @GetMapping("/new")
+    @ApiOperation(value = "02-03 신상 상품 조회 🏠", notes = "")
+    public CommonResponse<List<HomeRes.HomeNewProduct>> getNewProductList(@AuthenticationPrincipal User user){
+        List<HomeRes.HomeNewProduct> homeNewProductList = homeService.getNewProductList();
+        return CommonResponse.onSuccess(homeNewProductList);
+    }
 }
