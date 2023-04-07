@@ -5,8 +5,8 @@ import com.app.cindy.domain.Authority;
 import com.app.cindy.domain.pk.UserCategoryPk;
 import com.app.cindy.domain.user.User;
 import com.app.cindy.domain.user.UserCategory;
-import com.app.cindy.dto.UserReq;
-import com.app.cindy.dto.UserRes;
+import com.app.cindy.dto.user.UserReq;
+import com.app.cindy.dto.user.UserRes;
 import com.app.cindy.jwt.TokenProvider;
 import com.app.cindy.repository.UserCategoryRepository;
 import com.app.cindy.repository.UserRepository;
@@ -14,13 +14,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

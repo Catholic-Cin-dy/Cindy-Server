@@ -2,10 +2,9 @@ package com.app.cindy.controller;
 
 import com.app.cindy.exception.BadRequestException;
 import com.app.cindy.service.UserService;
-import com.app.cindy.common.CommonException;
 import com.app.cindy.common.CommonResponse;
-import com.app.cindy.dto.UserReq;
-import com.app.cindy.dto.UserRes;
+import com.app.cindy.dto.user.UserReq;
+import com.app.cindy.dto.user.UserRes;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
