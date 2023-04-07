@@ -1,4 +1,4 @@
-package com.app.cindy.dto;
+package com.app.cindy.dto.user;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

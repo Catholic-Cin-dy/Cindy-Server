@@ -1,4 +1,4 @@
-package com.app.cindy.domain.community;
+package com.app.cindy.domain.board;
 
 import com.app.cindy.domain.pk.BoardLikePk;
 import com.app.cindy.domain.user.User;

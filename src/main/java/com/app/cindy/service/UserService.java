@@ -1,8 +1,7 @@
 package com.app.cindy.service;
 
-import com.app.cindy.common.CommonException;
-import com.app.cindy.dto.UserReq;
-import com.app.cindy.dto.UserRes;
+import com.app.cindy.dto.user.UserReq;
+import com.app.cindy.dto.user.UserRes;
 
 import java.util.List;
 

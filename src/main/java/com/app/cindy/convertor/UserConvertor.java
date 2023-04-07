@@ -2,8 +2,8 @@ package com.app.cindy.convertor;
 
 import com.app.cindy.domain.Authority;
 import com.app.cindy.domain.user.User;
-import com.app.cindy.dto.UserReq;
-import com.app.cindy.dto.UserRes;
+import com.app.cindy.dto.user.UserReq;
+import com.app.cindy.dto.user.UserRes;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
