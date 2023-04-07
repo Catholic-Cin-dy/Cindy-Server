@@ -74,4 +74,18 @@ public class UserReq {
         @ApiModelProperty(notes = "닉네임", required = true, example = "타일러")
         private String nickname;
     }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ApiModel(value = "04-01 유저 좌표 받기")
+    public static class Distance{
+        @ApiModelProperty(notes = "위도",required = false,example = "37.541")
+        private double latitude;
+
+        @ApiModelProperty(notes = "경도",required = false,example = "126.986")
+        private double longitude;
+    }
 }

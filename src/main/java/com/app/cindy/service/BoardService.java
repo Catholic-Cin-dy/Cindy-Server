@@ -2,6 +2,7 @@ package com.app.cindy.service;
 
 import com.app.cindy.dto.PageResponse;
 import com.app.cindy.dto.board.BoardRes;
+import com.app.cindy.dto.user.UserReq;
 import com.app.cindy.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,18 +21,18 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
 
-    public PageResponse<List<BoardRes.BoardList>> getBoardList(Integer sort, Integer page, Integer size, Long userId) {
+    public PageResponse<List<BoardRes.BoardList>> getBoardList(Integer sort, Integer page, Integer size, Long userId, UserReq.Distance distance) {
         Pageable pageReq = PageRequest.of(page, size);
         List<BoardRes.BoardList> boardList = new ArrayList<>();
         Page<BoardRepository.GetBoardList> board = null;
-        //if(sort==0){
+        if(sort==0){
+            board = boardRepository.findAllBoardByCreate(userId,pageReq);
+        }
+        else if(sort==1){
             board = boardRepository.findAllBoardByLike(userId,pageReq);
-        //}
-//        else if(sort==1){
-//
-//        }else{
-//
-//        }
+        }else{
+            board = boardRepository.findAllBoardByDistance(userId,pageReq,distance.getLatitude(),distance.getLongitude());
+        }
         board.forEach(
                 result -> boardList.add(
                         new BoardRes.BoardList(
@@ -39,9 +40,11 @@ public class BoardService {
                                 result.getTitle(),
                                 result.getWriter(),
                                 Stream.of(result.getBoardImg().split(",")).collect(Collectors.toList()),
+                                result.getProfileImg(),
                                 result.getLikeCnt(),
                                 result.getCommentCnt(),
-                                result.getBoardTime()
+                                result.getBoardTime(),
+                                result.getLikeCheck()
                         )
                 )
         );
