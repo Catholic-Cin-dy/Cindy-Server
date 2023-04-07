@@ -1,27 +1,20 @@
 package com.app.cindy.service;
 
-import com.app.cindy.constants.Constants;
 import com.app.cindy.domain.user.User;
-import com.app.cindy.dto.UserReq;
-import com.app.cindy.dto.UserRes;
+import com.app.cindy.dto.user.UserReq;
+import com.app.cindy.dto.user.UserRes;
 import com.app.cindy.exception.BaseException;
 import com.app.cindy.exception.ForbiddenException;
 import com.app.cindy.repository.UserRepository;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.HashMap;
-
-import java.util.*;
 
 import static com.app.cindy.constants.CommonResponseStatus.KAKAO_SERVER_ERROR;
 import static com.app.cindy.constants.CommonResponseStatus.USER_NOT_FOUND;
