@@ -1,8 +1,8 @@
 package com.app.cindy.controller;
 
 import com.app.cindy.common.CommonResponse;
-import com.app.cindy.dto.UserReq;
-import com.app.cindy.dto.UserRes;
+import com.app.cindy.dto.user.UserReq;
+import com.app.cindy.dto.user.UserRes;
 import com.app.cindy.exception.BadRequestException;
 import com.app.cindy.exception.BaseException;
 import com.app.cindy.exception.ForbiddenException;
@@ -14,10 +14,8 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 
 import static com.app.cindy.constants.CommonResponseStatus.*;
 

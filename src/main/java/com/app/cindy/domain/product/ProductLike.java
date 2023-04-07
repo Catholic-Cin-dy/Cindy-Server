@@ -1,6 +1,5 @@
 package com.app.cindy.domain.product;
 
-import com.app.cindy.domain.community.Board;
 import com.app.cindy.domain.pk.ProductLikePk;
 import com.app.cindy.domain.user.User;
 import lombok.*;
