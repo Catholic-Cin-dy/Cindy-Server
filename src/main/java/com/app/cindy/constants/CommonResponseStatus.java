@@ -97,7 +97,9 @@ public enum CommonResponseStatus {
     NOT_EXIST_REVIEW(NOT_FOUND,"R001","해당 리뷰는 존재하지 않습니다."),
     NOT_EXIST_REVIEW_DELETE(BAD_REQUEST,"R002","해당 리뷰를 삭제할 권한이 없습니다."),
 
-    PRODUCT_NOT_FOUND(BAD_REQUEST,"P001","존재하는 상품이 없습니다.")
+    PRODUCT_NOT_FOUND(BAD_REQUEST,"P001","존재하는 상품이 없습니다."),
+
+    NOT_EXIST_BOARD(BAD_REQUEST,"B001","존재하는 게시글이 없습니다.")
 
 
     ;
