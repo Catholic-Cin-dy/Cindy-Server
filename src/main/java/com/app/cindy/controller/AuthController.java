@@ -51,8 +51,8 @@ public class AuthController {
 
     @ApiOperation(value = "01-02 소셜 회원가입 🔑", notes = "유저 소셜회원가입")
     @ResponseBody
-    @PostMapping(value = "/signup/kakao",consumes = {"multipart/form-data"})
-    public CommonResponse<UserRes.SignUp> socialSignUp(@ModelAttribute UserReq.SocialSignUp socialSignUp) throws BaseException, IOException {
+    @PostMapping(value = "/signup/kakao")
+    public CommonResponse<UserRes.SignUp> socialSignUp(@RequestBody UserReq.SocialSignUp socialSignUp) throws BaseException, IOException {
         log.info("post-social-signup");
         log.info("api = social-signup 01-10");
 

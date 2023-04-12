@@ -36,4 +36,8 @@ public class BoardController {
 
         return  CommonResponse.onSuccess(boardList);
     }
+
+
+
+
 }
