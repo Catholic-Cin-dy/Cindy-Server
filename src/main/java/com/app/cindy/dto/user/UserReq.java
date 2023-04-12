@@ -68,10 +68,21 @@ public class UserReq {
         @ApiModelProperty(notes = "실명", required = true, example = "전민기")
         private String name;
 
-        @ApiModelProperty(notes ="비밀번호", required = true, example = "*********")
-        private String password;
-
         @ApiModelProperty(notes = "닉네임", required = true, example = "타일러")
         private String nickname;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ApiModel(value = "04-01 유저 좌표 받기")
+    public static class Distance{
+        @ApiModelProperty(notes = "위도",required = false,example = "37.541")
+        private double latitude;
+
+        @ApiModelProperty(notes = "경도",required = false,example = "126.986")
+        private double longitude;
     }
 }
