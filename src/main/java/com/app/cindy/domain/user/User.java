@@ -2,6 +2,8 @@ package com.app.cindy.domain.user;
 
 import com.app.cindy.domain.Authority;
 import com.app.cindy.domain.BaseEntity;
+import com.app.cindy.domain.board.Board;
+import com.app.cindy.domain.product.Brand;
 import com.app.cindy.domain.product.Product;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -59,9 +61,12 @@ public class User extends BaseEntity implements UserDetails{
     @Column(name="login_date")
     private LocalDateTime loginDate;
 
-    @OneToMany(mappedBy="id")
+
+    @OneToMany(fetch = FetchType.LAZY)
     List<Product> product =new ArrayList<>();
 
+    @OneToMany(fetch = FetchType.LAZY)
+    List<Board> board =new ArrayList<>();
 
 
     @ManyToMany
