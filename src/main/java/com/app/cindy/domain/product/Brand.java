@@ -1,5 +1,6 @@
 package com.app.cindy.domain.product;
 
+import com.app.cindy.domain.board.BoardImgTag;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -26,7 +27,11 @@ public class Brand {
     @Column(name="name")
     private String name;
 
-    @OneToMany(mappedBy = "id")
+
+    @OneToMany(fetch = FetchType.LAZY)
     private List<Product> product=new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<BoardImgTag> boardImgTag=new ArrayList<>();
 
 }

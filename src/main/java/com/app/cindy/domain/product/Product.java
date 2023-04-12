@@ -2,6 +2,7 @@ package com.app.cindy.domain.product;
 
 import com.app.cindy.domain.BaseEntity;
 import com.app.cindy.domain.Category;
+import com.app.cindy.domain.board.BoardImgTag;
 import com.app.cindy.domain.user.User;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -55,8 +56,12 @@ public class Product extends BaseEntity {
     @Column(name= "type")
     private String type;
 
-    @OneToMany(mappedBy="product")
+    @OneToMany(mappedBy="product", fetch = FetchType.LAZY)
     List<ProductLike> productLike =new ArrayList<>();
+
+
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<BoardImgTag> boardImgTag=new ArrayList<>();
 
 
 }

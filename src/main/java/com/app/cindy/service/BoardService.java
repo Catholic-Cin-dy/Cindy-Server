@@ -1,25 +1,39 @@
 package com.app.cindy.service;
 
+import com.app.cindy.convertor.BoardConvertor;
+import com.app.cindy.domain.board.BoardImg;
+import com.app.cindy.domain.board.BoardImgTag;
 import com.app.cindy.dto.PageResponse;
 import com.app.cindy.dto.board.BoardRes;
+import com.app.cindy.exception.BadRequestException;
+import com.app.cindy.repository.BoardImgRepository;
+import com.app.cindy.repository.BoardImgTagRepository;
 import com.app.cindy.dto.user.UserReq;
 import com.app.cindy.repository.BoardRepository;
+import com.app.cindy.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.Min;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static com.app.cindy.constants.CommonResponseStatus.NOT_EXIST_BOARD;
 
 @Service
 @RequiredArgsConstructor
 public class BoardService {
 
     private final BoardRepository boardRepository;
+    private final BoardImgRepository boardImgRepository;
+    private final BoardImgTagRepository boardImgTagRepository;
+    private final CommentRepository commentRepository;
 
     public PageResponse<List<BoardRes.BoardList>> getBoardList(Integer sort, Integer page, Integer size, Long userId, UserReq.Distance distance) {
         Pageable pageReq = PageRequest.of(page, size);
@@ -43,12 +57,65 @@ public class BoardService {
                                 result.getProfileImg(),
                                 result.getLikeCnt(),
                                 result.getCommentCnt(),
-                                result.getBoardTime(),
-                                result.getLikeCheck()
-                        )
+                                result.getLikeCheck(),
+                                result.getBoardTime()
+                                )
                 )
         );
 
         return new PageResponse<>(board.isLast(),boardList);
+    }
+
+    public BoardRes.BoardDetail getBoardDetail(Long userId, Long boardId) {
+        List<BoardImg> boardImg = boardImgRepository.findByBoardId(boardId);
+        List<BoardRes.ImgList> imgList = new ArrayList<>();
+        BoardRepository.GetBoardDetail board = boardRepository.getBoardDetail(userId,boardId);
+
+        if(board.getBoardId()==null){
+            throw new BadRequestException(NOT_EXIST_BOARD);
+        }
+
+        for (BoardImg img : boardImg){
+            List<BoardImgTag> boardImgTag = boardImgTagRepository.findByImgId(img.getId());
+            List<BoardRes.ImgTagList> imgTagList=new ArrayList<>();
+
+            for (BoardImgTag tag : boardImgTag) {
+                if(Objects.equals(img.getId(), tag.getImgId())) {
+                    BoardRes.ImgTagList imgTag=BoardRes.ImgTagList.builder()
+                            .imgId(tag.getImgId())
+                            .brandId(tag.getBrandId())
+                            .brandName(tag.getBrand().getName())
+                            .x(tag.getX())
+                            .y(tag.getY())
+                            .build();
+                    imgTagList.add(imgTag);
+                }
+            }
+            BoardRes.ImgList imgInfo = new BoardRes.ImgList(img.getId(),img.getSequence(),img.getImgUrl(),imgTagList);
+            imgList.add(imgInfo);
+        }
+
+        return BoardConvertor.BoardDetail(board,imgList,userId);
+    }
+
+    public PageResponse<List<BoardRes.BoardComment>> getBoardComments(Long userId, Long boardId, @Min(value = 0) Integer page, Integer size) {
+        Pageable pageReq = PageRequest.of(page, size);
+        Page<CommentRepository.BoardComment> comment= commentRepository.getBoardComments(boardId,pageReq);
+        List<BoardRes.BoardComment> boardComment = new ArrayList<>();
+
+        comment.forEach(
+                result -> boardComment.add(
+                        new BoardRes.BoardComment(
+                                result.getCommentId(),
+                                result.getUserId(),
+                                result.getProfileImgUrl(),
+                                result.getNickName(),
+                                result.getComment(),
+                                result.getCommentTime(),
+                                result.getUserId().equals(userId)
+                        )
+                )
+        );
+        return new PageResponse<>(comment.isLast(),boardComment);
     }
 }
