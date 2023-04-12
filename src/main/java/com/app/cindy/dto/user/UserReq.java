@@ -68,9 +68,6 @@ public class UserReq {
         @ApiModelProperty(notes = "실명", required = true, example = "전민기")
         private String name;
 
-        @ApiModelProperty(notes ="비밀번호", required = true, example = "*********")
-        private String password;
-
         @ApiModelProperty(notes = "닉네임", required = true, example = "타일러")
         private String nickname;
     }
