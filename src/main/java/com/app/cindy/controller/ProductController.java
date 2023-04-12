@@ -52,7 +52,7 @@ public class ProductController {
  */
 
 
-    @GetMapping("/{productId}}")
+    @GetMapping("/{productId}")
     @ApiOperation(value = "03-03 상품 상세조회🏬 API Response #FRAME PRODUCT 02", notes = "")
     public CommonResponse<ProductRes.ProductDetail> getProductDetail(@AuthenticationPrincipal User user,
                                                                      @PathVariable("productId") Long productId) {
