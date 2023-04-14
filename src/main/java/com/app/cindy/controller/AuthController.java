@@ -7,7 +7,7 @@ import com.app.cindy.exception.BadRequestException;
 import com.app.cindy.exception.BaseException;
 import com.app.cindy.exception.ForbiddenException;
 import com.app.cindy.service.AuthService;
-import com.app.cindy.service.AwsS3Service;
+import com.app.cindy.service.S3Service;
 import com.app.cindy.service.LoginService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -27,7 +27,7 @@ import static com.app.cindy.constants.CommonResponseStatus.*;
 public class AuthController {
     private final AuthService authService;
     private final LoginService logInService;
-    private final AwsS3Service s3Service;
+    private final S3Service s3Service;
 
 
     @ApiOperation(value = "01-01 카카오 로그인 테스트용 코드발급 🔑", notes = "유저 카카오 로그인")

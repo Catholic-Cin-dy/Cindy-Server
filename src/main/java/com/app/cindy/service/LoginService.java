@@ -28,7 +28,7 @@ public class LoginService {
 
     private final PasswordEncoder passwordEncoder;
 
-    private final AwsS3Service awsS3Service;
+    private final S3Service s3Service;
     private final UserCategoryRepository userCategoryRepository;
 
 
