@@ -3,18 +3,27 @@ package com.app.cindy.controller;
 import com.app.cindy.common.CommonResponse;
 import com.app.cindy.domain.user.User;
 import com.app.cindy.dto.PageResponse;
+import com.app.cindy.dto.board.BoardReq;
 import com.app.cindy.dto.board.BoardRes;
 import com.app.cindy.dto.user.UserReq;
+import com.app.cindy.exception.BadRequestException;
+import com.app.cindy.exception.BaseException;
 import com.app.cindy.service.BoardService;
+import com.app.cindy.service.S3Service;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.Min;
+import java.io.IOException;
 import java.util.List;
+
+import static com.app.cindy.constants.CommonResponseStatus.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,6 +32,7 @@ import java.util.List;
 public class BoardController {
 
     private final BoardService boardService;
+    private final S3Service s3Service;
 
     @GetMapping("")
     @ApiOperation(value = "04-01 ootd 게시판 조회 👗 API #FRAME OOTD 01", notes = "")
@@ -57,6 +67,28 @@ public class BoardController {
         PageResponse<List<BoardRes.BoardComment>> boardComment = boardService.getBoardComments(userId,boardId,page,size);
 
         return  CommonResponse.onSuccess(boardComment);
+    }
+
+    @PostMapping(value = "/new" ,consumes = {"multipart/form-data"})
+    @ApiOperation(value = "04-04 ootd 게시판 작성 👗", notes = "")
+    public CommonResponse<String> setBoard(@AuthenticationPrincipal User user,
+                                           @RequestPart("postBoard") BoardReq.PostBoard postBoard,
+                                           @RequestPart("imgUrl") List<MultipartFile> multipartFiles) throws BaseException, IOException {
+        Long userId = user.getId();
+
+        if (postBoard.getTitle() == null) {
+            throw new BadRequestException(BOARD_NOT_WRITE_TITLE);
+        }
+        if (postBoard.getContent() == null) {
+            throw new BadRequestException(BOARD_NOT_WRITE_CONTENT);
+        }
+        if (multipartFiles.get(0) == null) {
+            throw new BadRequestException(BOARD_NOT_UPLOAD_IMG);
+        }
+        List<String> imgPaths = s3Service.upload(multipartFiles);
+        System.out.println("IMG 경로들 : " + imgPaths);
+        boardService.setBoard(userId, imgPaths, postBoard);
+        return CommonResponse.onSuccess("생성 완료.");
     }
 
 

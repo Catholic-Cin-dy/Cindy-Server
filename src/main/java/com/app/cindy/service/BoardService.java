@@ -1,14 +1,20 @@
 package com.app.cindy.service;
 
+import com.app.cindy.domain.board.Board;
+import com.app.cindy.domain.board.BoardImg;
+import com.app.cindy.domain.board.BoardImgTag;
 import com.app.cindy.convertor.BoardConvertor;
 import com.app.cindy.domain.board.BoardImg;
 import com.app.cindy.domain.board.BoardImgTag;
 import com.app.cindy.dto.PageResponse;
+import com.app.cindy.dto.board.BoardReq;
 import com.app.cindy.dto.board.BoardRes;
 import com.app.cindy.exception.BadRequestException;
 import com.app.cindy.repository.BoardImgRepository;
 import com.app.cindy.repository.BoardImgTagRepository;
 import com.app.cindy.dto.user.UserReq;
+import com.app.cindy.repository.BoardImgRepository;
+import com.app.cindy.repository.BoardImgTagRepository;
 import com.app.cindy.repository.BoardRepository;
 import com.app.cindy.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +40,7 @@ public class BoardService {
     private final BoardImgRepository boardImgRepository;
     private final BoardImgTagRepository boardImgTagRepository;
     private final CommentRepository commentRepository;
+    private final S3Service s3Service;
 
     public PageResponse<List<BoardRes.BoardList>> getBoardList(Integer sort, Integer page, Integer size, Long userId, UserReq.Distance distance) {
         Pageable pageReq = PageRequest.of(page, size);
@@ -117,5 +124,41 @@ public class BoardService {
                 )
         );
         return new PageResponse<>(comment.isLast(),boardComment);
+    }
+
+    public void setBoard(Long userId, List<String> imgPaths,BoardReq.PostBoard postBoard) {
+        Board board = Board.builder()
+                .userId(userId)
+                .title(postBoard.getTitle())
+                .content(postBoard.getContent())
+                .latitude(postBoard.getLatitude())
+                .longitude(postBoard.getLongitude())
+                .build();
+        Long boardId = boardRepository.save(board).getId();
+
+        List<String> imgList = new ArrayList<>();
+
+        int sequence = 1;
+        for (int i=0;i<postBoard.getImgList().size();i++) {
+//            String imgUrl = s3Service.upload(postBoard.getImgList().get(i).getMultipartFile());
+            BoardImg boardImg = new BoardImg(imgPaths.get(i),boardId,sequence);
+            sequence++;
+            Long boardImgId = boardImgRepository.save(boardImg).getId();
+            if(postBoard.getImgList().get(i).getImgId() != null){
+                BoardImgTag boardImgTag = BoardImgTag.builder()
+                        .imgId(boardImgId)
+                        .brandId(postBoard.getImgList().get(i).getBrandId())
+                        .x(postBoard.getImgList().get(i).getX())
+                        .y(postBoard.getImgList().get(i).getY())
+                        .build();
+                System.out.println(i);
+                boardImgTagRepository.save(boardImgTag);
+            }
+            imgList.add(boardImg.getImgUrl());
+        }
+
+
+
+
     }
 }

@@ -35,5 +35,10 @@ public class BoardImg extends BaseEntity {
     @Column(name="board_id")
     private Long boardId;
 
+    public BoardImg(String imgUrl,Long BoardId,int sequence){
+        this.imgUrl = imgUrl;
+        this.boardId = BoardId;
+        this.sequence = sequence;
+    }
 
 }

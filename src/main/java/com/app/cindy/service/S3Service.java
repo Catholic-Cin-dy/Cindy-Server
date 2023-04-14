@@ -8,15 +8,12 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.app.cindy.exception.ForbiddenException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -25,7 +22,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class AwsS3Service {
+public class S3Service {
 
     private final AmazonS3 s3Client;
 
@@ -50,24 +47,27 @@ public class AwsS3Service {
                 .build();
     }
 
-    public String upload(MultipartFile multipartFile) {
-        String imgUrl = "";
+    public List<String> upload(List<MultipartFile> multipartFile) {
+        List<String> imgUrlList = new ArrayList<>();
 
         // forEach 구문을 통해 multipartFile로 넘어온 파일들 하나씩 fileNameList에 추가
-            String fileName = createFileName(multipartFile.getOriginalFilename());
+        for (MultipartFile file : multipartFile) {
+            String fileName = createFileName(file.getOriginalFilename());
             ObjectMetadata objectMetadata = new ObjectMetadata();
-            objectMetadata.setContentLength(multipartFile.getSize());
-            objectMetadata.setContentType(multipartFile.getContentType());
+            objectMetadata.setContentLength(file.getSize());
+            objectMetadata.setContentType(file.getContentType());
 
-            try (InputStream inputStream = multipartFile.getInputStream()) {
+            try (InputStream inputStream = file.getInputStream()) {
                 s3Client.putObject(new PutObjectRequest(bucket + "/post/image", fileName, inputStream, objectMetadata)
                         .withCannedAcl(CannedAccessControlList.PublicRead));
-                imgUrl = (s3Client.getUrl(bucket + "/post/image", fileName).toString());
+                imgUrlList.add(s3Client.getUrl(bucket + "/post/image", fileName).toString());
             } catch (IOException e) {
                 //throw new PrivateException(Code.IMAGE_UPLOAD_ERROR);
             }
-        return imgUrl;
+        }
+        return imgUrlList;
     }
+
     // 이미지파일명 중복 방지
     private String createFileName(String fileName) {
         return UUID.randomUUID().toString().concat(getFileExtension(fileName));
