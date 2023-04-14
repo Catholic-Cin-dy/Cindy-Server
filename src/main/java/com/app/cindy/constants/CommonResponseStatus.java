@@ -99,12 +99,18 @@ public enum CommonResponseStatus {
 
     PRODUCT_NOT_FOUND(BAD_REQUEST,"P001","존재하는 상품이 없습니다."),
 
-    NOT_EXIST_BOARD(BAD_REQUEST,"B001","존재하는 게시글이 없습니다.")
+    NOT_EXIST_BOARD(BAD_REQUEST,"B001","존재하는 게시글이 없습니다."),
+
+
+
+
+    //Board BXXX
+    BOARD_NOT_WRITE_TITLE(BAD_REQUEST,"B001","제목을 입력하세요."),
+    BOARD_NOT_WRITE_CONTENT(BAD_REQUEST,"B002","내용을 입력하세요."),
+    BOARD_NOT_UPLOAD_IMG(BAD_REQUEST,"B003","업로드할 사진이 없습니다."),
 
 
     ;
-
-    //Planning
 
 
 
