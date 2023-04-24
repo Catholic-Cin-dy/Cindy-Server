@@ -23,7 +23,29 @@ public class BoardReq {
         @ApiModelProperty(notes = "게시판 제목", required = true, example = "오늘의 ootd!")
         private String title;
 
-        @ApiModelProperty(notes = "이미지 객체..", required = true, example = "형식을 모르겠습니다.")
+        @ApiModelProperty(notes = "해당 API는 포스트맨으로 해주세요!", required = true, example = "포스트맨으로 해야함!")
+        List<img> imgList;
+        @ApiModelProperty(notes = "게시판 글 내용", required = true, example = "고프코어 느낌을 내봤습니다~")
+        private String content;
+
+        @ApiModelProperty(notes = "위도", required = true, example = "12.34")
+        private double latitude;
+
+        @ApiModelProperty(notes = "경도", required = true, example = "56.78")
+        private double longitude;
+
+    }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Setter
+    @Getter
+    @ApiModel(value = "04-03 게시판 수정 Request🔑")
+    public static class UpdateBoard{
+        @ApiModelProperty(notes = "게시판 제목", required = true, example = "오늘의 ootd!")
+        private String title;
+
+        @ApiModelProperty(notes = "해당 API는 포스트맨으로 해주세요!", required = true, example = "포스트맨으로 해야함!")
         List<img> imgList;
         @ApiModelProperty(notes = "게시판 글 내용", required = true, example = "고프코어 느낌을 내봤습니다~")
         private String content;

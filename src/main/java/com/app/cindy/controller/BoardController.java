@@ -34,7 +34,7 @@ public class BoardController {
     private final BoardService boardService;
     private final S3Service s3Service;
 
-    @GetMapping("")
+    @PostMapping("")
     @ApiOperation(value = "04-01 ootd 게시판 조회 👗 API #FRAME OOTD 01", notes = "")
     public CommonResponse<PageResponse<List<BoardRes.BoardList>>> getBoardList(@AuthenticationPrincipal User user,
                                                                                @Parameter(description = "페이지", example = "0") @RequestParam(required = false,defaultValue = "0" ) @Min(value = 0) Integer page,
@@ -70,7 +70,7 @@ public class BoardController {
     }
 
     @PostMapping(value = "/new" ,consumes = {"multipart/form-data"})
-    @ApiOperation(value = "04-04 ootd 게시판 작성 👗", notes = "")
+    @ApiOperation(value = "04-04 ootd 게시판 작성 👗 API #FRAME OOTD 03", notes = "")
     public CommonResponse<String> setBoard(@AuthenticationPrincipal User user,
                                            @RequestPart("postBoard") BoardReq.PostBoard postBoard,
                                            @RequestPart("imgUrl") List<MultipartFile> multipartFiles) throws BaseException, IOException {
@@ -89,6 +89,28 @@ public class BoardController {
         System.out.println("IMG 경로들 : " + imgPaths);
         boardService.setBoard(userId, imgPaths, postBoard);
         return CommonResponse.onSuccess("생성 완료.");
+    }
+
+    @PatchMapping(value = "/update/{userId}/{boardId}" ,consumes = {"multipart/form-data"})
+    @ApiOperation(value = "04-03 ootd 게시판 수정 👗 API #FRAME OOTD 04", notes = "")
+    public CommonResponse<String> setBoardUpdate(@AuthenticationPrincipal User user,
+                                           @RequestPart("postBoard") BoardReq.PostBoard postBoard,
+                                           @RequestPart("imgUrl") List<MultipartFile> multipartFiles) throws BaseException, IOException {
+        Long userId = user.getId();
+
+        if (postBoard.getTitle() == null) {
+            throw new BadRequestException(BOARD_NOT_WRITE_TITLE);
+        }
+        if (postBoard.getContent() == null) {
+            throw new BadRequestException(BOARD_NOT_WRITE_CONTENT);
+        }
+        if (multipartFiles.get(0) == null) {
+            throw new BadRequestException(BOARD_NOT_UPLOAD_IMG);
+        }
+        List<String> imgPaths = s3Service.upload(multipartFiles);
+        System.out.println("IMG 경로들 : " + imgPaths);
+        boardService.setBoard(userId, imgPaths, postBoard);
+        return CommonResponse.onSuccess("수정 완료.");
     }
 
 
