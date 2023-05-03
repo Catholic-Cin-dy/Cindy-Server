@@ -1,5 +1,7 @@
 package com.app.cindy.convertor;
 
+import com.app.cindy.domain.board.Comment;
+import com.app.cindy.dto.board.BoardReq;
 import com.app.cindy.dto.board.BoardRes;
 import com.app.cindy.repository.BoardRepository;
 
@@ -20,5 +22,9 @@ public class BoardConvertor {
                 .boardTime(board.getBoardTime())
                 .isMy(board.getUserId().equals(userId))
                 .build();
+    }
+
+    public static Comment PostComment(Long userId, BoardReq.Comment comment) {
+        return Comment.builder().userId(userId).boardId(comment.getBoardId()).content(comment.getComment()).build();
     }
 }
