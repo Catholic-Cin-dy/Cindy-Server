@@ -105,26 +105,6 @@ public class BoardService {
         return BoardConvertor.BoardDetail(board,imgList,userId);
     }
 
-    public PageResponse<List<BoardRes.BoardComment>> getBoardComments(Long userId, Long boardId, @Min(value = 0) Integer page, Integer size) {
-        Pageable pageReq = PageRequest.of(page, size);
-        Page<CommentRepository.BoardComment> comment= commentRepository.getBoardComments(boardId,pageReq);
-        List<BoardRes.BoardComment> boardComment = new ArrayList<>();
-
-        comment.forEach(
-                result -> boardComment.add(
-                        new BoardRes.BoardComment(
-                                result.getCommentId(),
-                                result.getUserId(),
-                                result.getProfileImgUrl(),
-                                result.getNickName(),
-                                result.getComment(),
-                                result.getCommentTime(),
-                                result.getUserId().equals(userId)
-                        )
-                )
-        );
-        return new PageResponse<>(comment.isLast(),boardComment);
-    }
 
     public void setBoard(Long userId, List<String> imgPaths,BoardReq.PostBoard postBoard) {
         Board board = Board.builder()
@@ -160,5 +140,9 @@ public class BoardService {
 
 
 
+    }
+
+    public boolean existsBoardByBoardId(Long boardId) {
+        return boardRepository.existsById(boardId);
     }
 }

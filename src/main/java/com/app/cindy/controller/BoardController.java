@@ -9,6 +9,7 @@ import com.app.cindy.dto.user.UserReq;
 import com.app.cindy.exception.BadRequestException;
 import com.app.cindy.exception.BaseException;
 import com.app.cindy.service.BoardService;
+import com.app.cindy.service.CommentService;
 import com.app.cindy.service.S3Service;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -33,6 +34,7 @@ public class BoardController {
 
     private final BoardService boardService;
     private final S3Service s3Service;
+    private final CommentService commentService;
 
     @PostMapping("")
     @ApiOperation(value = "04-01 ootd 게시판 조회 👗 API #FRAME OOTD 01", notes = "")
@@ -58,13 +60,16 @@ public class BoardController {
     }
 
     @GetMapping("/comments/{boardId}")
-    @ApiOperation(value = "04-03 ootd 게시판 상세 조회 댓글 조회 👗 API #FRAME OOTD 02", notes = "게시판 상세 조회 API 입니다. 04-03 댓글 상세조회와 함께 세트입니당")
+    @ApiOperation(value = "04-06 ootd 게시판 상세 조회 댓글 조회 👗 API #FRAME OOTD 02", notes = "게시판 상세 조회 API 입니다. 04-03 댓글 상세조회와 함께 세트입니당")
     public CommonResponse<PageResponse<List<BoardRes.BoardComment>>> getBoardComments(@AuthenticationPrincipal User user,
                                                                                       @Parameter(description ="boardId 값 보내주세요",example = "1") @PathVariable("boardId") Long boardId,
                                                                                       @Parameter(description = "페이지", example = "0") @RequestParam(required = false,defaultValue = "0" ) @Min(value = 0) Integer page,
                                                                                       @Parameter(description = "페이지 사이즈", example = "10") @RequestParam(required = false,defaultValue = "10")  Integer size){
         Long userId= user.getId();
-        PageResponse<List<BoardRes.BoardComment>> boardComment = boardService.getBoardComments(userId,boardId,page,size);
+
+        if(!boardService.existsBoardByBoardId(boardId))throw new BadRequestException(NOT_EXIST_BOARD);
+
+        PageResponse<List<BoardRes.BoardComment>> boardComment = commentService.getBoardComments(userId,boardId,page,size);
 
         return  CommonResponse.onSuccess(boardComment);
     }
