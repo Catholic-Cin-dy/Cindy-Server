@@ -28,7 +28,7 @@ public class BaseEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name="status")
+    @Column(name="status",insertable = false)
     @ColumnDefault(value="true")
     private boolean status;
 }
