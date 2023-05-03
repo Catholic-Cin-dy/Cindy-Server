@@ -96,5 +96,32 @@ public class BoardController {
         return CommonResponse.onSuccess("생성 완료.");
     }
 
+    @PostMapping("/comments")
+    @ApiOperation(value = "04-07 ootd 게시판 댓글 달기 👗", notes = "")
+    public CommonResponse<String> postComment(@AuthenticationPrincipal User user,@RequestBody BoardReq.Comment comment){
+        if(!boardService.existsBoardByBoardId(comment.getBoardId()))throw new BadRequestException(NOT_EXIST_BOARD);
+        Long userId = user.getId();
+        commentService.postComment(userId,comment);
+        return CommonResponse.onSuccess("댓글 작성 완료");
+    }
+
+    @PatchMapping("/like/{boardId}")
+    @ApiOperation(value = "04-10 ootd 게시판 좋아요 👗", notes = "")
+    public CommonResponse<String> likeBoard(@AuthenticationPrincipal User user,@Parameter(description ="boardId 값 보내주세요",example = "1") @PathVariable("boardId") Long boardId){
+        Long userId = user.getId();
+        boolean checkLike=boardService.existsLike(userId,boardId);
+        String result="";
+        if(checkLike){
+            boardService.deleteLike(userId,boardId);
+            result="좋아요 취소 성공";
+        }else{
+            boardService.likeBoard(userId,boardId);
+            result="좋아요 성공";
+        }
+
+        return CommonResponse.onSuccess(result);
+    }
+
+
 
 }
