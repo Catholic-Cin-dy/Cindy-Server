@@ -1,6 +1,9 @@
 package com.app.cindy.service;
 
+import com.app.cindy.convertor.BoardConvertor;
+import com.app.cindy.domain.board.Comment;
 import com.app.cindy.dto.PageResponse;
+import com.app.cindy.dto.board.BoardReq;
 import com.app.cindy.dto.board.BoardRes;
 import com.app.cindy.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
@@ -38,5 +41,10 @@ public class CommentService {
                 )
         );
         return new PageResponse<>(comment.isLast(),boardComment);
+    }
+
+    public void postComment(Long userId, BoardReq.Comment comment) {
+        Comment comments = BoardConvertor.PostComment(userId,comment);
+        commentRepository.save(comments);
     }
 }
