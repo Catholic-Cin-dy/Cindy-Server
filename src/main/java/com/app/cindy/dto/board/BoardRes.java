@@ -110,7 +110,7 @@ public class BoardRes {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "04-02 OOTD 게시판 이미지 좌표 리스트 👗 API Response #FRAME OOTD 04-02")
+    @ApiModel(value = "04-02 OOTD 게시판 이미지 좌표 리스트 👗 API Response #FRAME OOTD 04-02" )
     public static class ImgTagList{
         @ApiModelProperty(notes = "imgId",required = true,example = "1")
         private Long imgId;
@@ -129,7 +129,7 @@ public class BoardRes {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "04-03 OOTD  게시판 댓글 조회 👗 API Response #FRAME OOTD 04-02")
+    @ApiModel(value = "04-06 OOTD  게시판 댓글 조회 👗 API Response #FRAME OOTD 04-02")
     public static class BoardComment {
         @ApiModelProperty(notes = "댓글 id",required = true,example = "1")
         private  Long commentId;
