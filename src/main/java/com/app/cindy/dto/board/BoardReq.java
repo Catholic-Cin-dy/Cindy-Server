@@ -18,7 +18,7 @@ public class BoardReq {
     @AllArgsConstructor
     @Setter
     @Getter
-    @ApiModel(value = "04-04 게시판 작성 Request🔑")
+    @ApiModel(value = "04-04 게시판 작성 Request👗")
     public static class PostBoard{
         @ApiModelProperty(notes = "게시판 제목", required = true, example = "오늘의 ootd!")
         private String title;
@@ -80,5 +80,17 @@ public class BoardReq {
         private Long imgId;
         private double x;
         private double y;
+    }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Setter
+    @Getter
+    @ApiModel(value = "04-07 게시판 댓글 달기 Request👗")
+    public static class Comment {
+        @ApiModelProperty(notes = "1", required = true, example = "게시판 아이디")
+        private Long boardId;
+        @ApiModelProperty(notes = "댓글 내용", required = true, example = "오늘의 ootd 이뻐요")
+        private String comment;
     }
 }
