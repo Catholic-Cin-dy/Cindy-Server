@@ -68,6 +68,8 @@ public class BoardRes {
 
         @ApiModelProperty(notes = "게시글 사진 리스트",required = true,example = "")
         private List<ImgList> imgList;
+        @ApiModelProperty(notes = "게시글 태그 리스트",required = true,example = "\"샤넬\",\"이뻐요\"")
+        private List<String> tagList;
 
         @ApiModelProperty(notes = "좋아요 개수",required = true,example = "123")
         private Long likeCount;
@@ -145,6 +147,7 @@ public class BoardRes {
         private String commentTime;
         @ApiModelProperty(notes = "자기 댓글 유무",required = true,example = "true")
         private boolean isMy;
-
     }
+
+
 }

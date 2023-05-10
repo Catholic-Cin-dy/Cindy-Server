@@ -37,6 +37,7 @@ public class BoardService {
     private final BoardImgTagRepository boardImgTagRepository;
     private final CommentRepository commentRepository;
     private final BoardLikeRepository boardLikeRepository;
+    private final BoardHashTagRepository boardHashTagRepository;
     private final S3Service s3Service;
 
     public PageResponse<List<BoardRes.BoardList>> getBoardList(Integer sort, Integer page, Integer size, Long userId, UserReq.Distance distance) {
@@ -134,6 +135,12 @@ public class BoardService {
             imgList.add(boardImg.getImgUrl());
         }
 
+        for(String tag : postBoard.getTags()){
+            BoardHashTag boardHashTag = BoardHashTag.builder().boardId(boardId).tag(tag).build();
+
+            boardHashTagRepository.save(boardHashTag);
+        }
+
 
 
 
@@ -154,5 +161,11 @@ public class BoardService {
 
     public void deleteLike(Long userId, Long boardId) {
         boardLikeRepository.deleteByUserIdAndBoardId(userId, boardId);
+    }
+
+    public List<String> getTagList(String content) {
+        List<BoardHashTag> boardHashTags = boardHashTagRepository.findByTagContainingOrderByCreatedAtAsc(content);
+
+        return boardHashTags.stream().map(BoardHashTag::getTag).collect(Collectors.toList());
     }
 }
