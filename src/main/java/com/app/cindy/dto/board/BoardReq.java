@@ -34,6 +34,9 @@ public class BoardReq {
         @ApiModelProperty(notes = "경도", required = true, example = "56.78")
         private double longitude;
 
+        @ApiModelProperty(notes = "태그 리스트", required = true, example = "[\"안녕\",\"OOTD\"]")
+        private List<String> tags;
+
     }
 
     @NoArgsConstructor

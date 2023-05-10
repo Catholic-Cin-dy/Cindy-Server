@@ -109,11 +109,6 @@ public class ProductController {
             productService.postProductLike(userId,productId);
             result = "좋아요 성공";
         }
-
-
         return CommonResponse.onSuccess(result);
     }
-
-
-
 }
