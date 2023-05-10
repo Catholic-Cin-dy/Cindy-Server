@@ -16,6 +16,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -109,6 +110,7 @@ public class BoardController {
     @ApiOperation(value = "04-10 ootd 게시판 좋아요 👗", notes = "")
     public CommonResponse<String> likeBoard(@AuthenticationPrincipal User user,@Parameter(description ="boardId 값 보내주세요",example = "1") @PathVariable("boardId") Long boardId){
         Long userId = user.getId();
+        if(!boardService.existsBoardByBoardId(boardId)) throw new BadRequestException(NOT_EXIST_BOARD);
         boolean checkLike=boardService.existsLike(userId,boardId);
         String result="";
         if(checkLike){
@@ -120,6 +122,14 @@ public class BoardController {
         }
 
         return CommonResponse.onSuccess(result);
+    }
+
+    @GetMapping("/tag")
+    @ApiOperation(value = "04-11 ootd 게시판 작성 시 태그 검색 조회 👗", notes = "")
+    public CommonResponse<List<String>> getTagList(@Param("content") String content) {
+        List<String> tagList = boardService.getTagList(content);
+
+        return CommonResponse.onSuccess(tagList);
     }
 
     @PatchMapping(value = "/update/{userId}/{boardId}" ,consumes = {"multipart/form-data"})
