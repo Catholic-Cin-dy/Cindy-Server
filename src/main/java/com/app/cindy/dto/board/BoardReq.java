@@ -18,7 +18,7 @@ public class BoardReq {
     @AllArgsConstructor
     @Setter
     @Getter
-    @ApiModel(value = "04-04 게시판 작성 Request🔑")
+    @ApiModel(value = "04-04 게시판 작성 Request👗")
     public static class PostBoard{
         @ApiModelProperty(notes = "게시판 제목", required = true, example = "오늘의 ootd!")
         private String title;
@@ -33,6 +33,9 @@ public class BoardReq {
 
         @ApiModelProperty(notes = "경도", required = true, example = "56.78")
         private double longitude;
+
+        @ApiModelProperty(notes="태그 리스트",required = true,example = "[\"샤넬\",\"샤넬 이뻐요\"]")
+        private List<String> tags;
 
     }
 
@@ -62,6 +65,10 @@ public class BoardReq {
         @ApiModelProperty(notes = "게시물 id", required = true, example = "10")
         private Long boardId;
 
+        @ApiModelProperty(notes = "태그 리스트", required = true, example = "[\"안녕\",\"OOTD\"]")
+        private List<String> tags;
+
+
     }
 
     @NoArgsConstructor
@@ -86,5 +93,17 @@ public class BoardReq {
         private Long imgId;
         private double x;
         private double y;
+    }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Setter
+    @Getter
+    @ApiModel(value = "04-07 게시판 댓글 달기 Request👗")
+    public static class Comment {
+        @ApiModelProperty(notes = "1", required = true, example = "게시판 아이디")
+        private Long boardId;
+        @ApiModelProperty(notes = "댓글 내용", required = true, example = "오늘의 ootd 이뻐요")
+        private String comment;
     }
 }

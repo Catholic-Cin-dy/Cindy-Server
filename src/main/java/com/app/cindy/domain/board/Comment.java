@@ -3,6 +3,7 @@ package com.app.cindy.domain.board;
 import com.app.cindy.domain.BaseEntity;
 import com.app.cindy.domain.user.User;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -41,5 +42,9 @@ public class Comment extends BaseEntity {
 
     @Column(name="board_id")
     private Long boardId;
+
+    @Column(name="status")
+    @ColumnDefault(value="true")
+    private boolean status;
 
 }

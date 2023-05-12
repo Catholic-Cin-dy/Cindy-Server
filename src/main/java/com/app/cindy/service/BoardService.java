@@ -1,22 +1,18 @@
 package com.app.cindy.service;
 
-import com.app.cindy.domain.board.Board;
-import com.app.cindy.domain.board.BoardImg;
-import com.app.cindy.domain.board.BoardImgTag;
+import com.app.cindy.domain.board.*;
 import com.app.cindy.convertor.BoardConvertor;
 import com.app.cindy.domain.board.BoardImg;
 import com.app.cindy.domain.board.BoardImgTag;
+import com.app.cindy.domain.pk.BoardLikePk;
 import com.app.cindy.dto.PageResponse;
 import com.app.cindy.dto.board.BoardReq;
 import com.app.cindy.dto.board.BoardRes;
 import com.app.cindy.exception.BadRequestException;
-import com.app.cindy.repository.BoardImgRepository;
-import com.app.cindy.repository.BoardImgTagRepository;
+import com.app.cindy.repository.*;
 import com.app.cindy.dto.user.UserReq;
 import com.app.cindy.repository.BoardImgRepository;
 import com.app.cindy.repository.BoardImgTagRepository;
-import com.app.cindy.repository.BoardRepository;
-import com.app.cindy.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -40,6 +36,8 @@ public class BoardService {
     private final BoardImgRepository boardImgRepository;
     private final BoardImgTagRepository boardImgTagRepository;
     private final CommentRepository commentRepository;
+    private final BoardLikeRepository boardLikeRepository;
+    private final BoardHashTagRepository boardHashTagRepository;
     private final S3Service s3Service;
 
     public PageResponse<List<BoardRes.BoardList>> getBoardList(Integer sort, Integer page, Integer size, Long userId, UserReq.Distance distance) {
@@ -105,26 +103,6 @@ public class BoardService {
         return BoardConvertor.BoardDetail(board,imgList,userId);
     }
 
-    public PageResponse<List<BoardRes.BoardComment>> getBoardComments(Long userId, Long boardId, @Min(value = 0) Integer page, Integer size) {
-        Pageable pageReq = PageRequest.of(page, size);
-        Page<CommentRepository.BoardComment> comment= commentRepository.getBoardComments(boardId,pageReq);
-        List<BoardRes.BoardComment> boardComment = new ArrayList<>();
-
-        comment.forEach(
-                result -> boardComment.add(
-                        new BoardRes.BoardComment(
-                                result.getCommentId(),
-                                result.getUserId(),
-                                result.getProfileImgUrl(),
-                                result.getNickName(),
-                                result.getComment(),
-                                result.getCommentTime(),
-                                result.getUserId().equals(userId)
-                        )
-                )
-        );
-        return new PageResponse<>(comment.isLast(),boardComment);
-    }
 
     public void setBoard(Long userId, List<String> imgPaths,BoardReq.PostBoard postBoard) {
         Board board = Board.builder()
@@ -155,6 +133,12 @@ public class BoardService {
                 boardImgTagRepository.save(boardImgTag);
             }
             imgList.add(boardImg.getImgUrl());
+        }
+
+        for(String tag : postBoard.getTags()){
+            BoardHashTag boardHashTag = BoardHashTag.builder().boardId(boardId).tag(tag).build();
+
+            boardHashTagRepository.save(boardHashTag);
         }
 
 
@@ -193,5 +177,28 @@ public class BoardService {
         String deleteImgUrl = boardImgRepository.findImgUrlByboardImgId(deleteImgUrlId);
         s3Service.fileDelete(deleteImgUrl);
         boardImgRepository.deleteById(deleteImgUrlId);
+    }
+  
+    public boolean existsBoardByBoardId(Long boardId) {
+        return boardRepository.existsById(boardId);
+    }
+
+    public boolean existsLike(Long userId, Long boardId) {
+        return boardLikeRepository.existsByUserIdAndBoardId(userId, boardId); //
+    }
+
+    public void likeBoard(Long userId, Long boardId) {
+        BoardLike boardLike = BoardLike.builder().id(new BoardLikePk(userId,boardId)).build();
+        boardLikeRepository.save(boardLike);
+    }
+
+    public void deleteLike(Long userId, Long boardId) {
+        boardLikeRepository.deleteByUserIdAndBoardId(userId, boardId);
+    }
+
+    public List<String> getTagList(String content) {
+        List<BoardHashTag> boardHashTags = boardHashTagRepository.findByTagContainingOrderByCreatedAtAsc(content);
+
+        return boardHashTags.stream().map(BoardHashTag::getTag).collect(Collectors.toList());
     }
 }

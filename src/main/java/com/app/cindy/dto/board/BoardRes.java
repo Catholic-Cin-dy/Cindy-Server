@@ -68,6 +68,8 @@ public class BoardRes {
 
         @ApiModelProperty(notes = "게시글 사진 리스트",required = true,example = "")
         private List<ImgList> imgList;
+        @ApiModelProperty(notes = "게시글 태그 리스트",required = true,example = "\"샤넬\",\"이뻐요\"")
+        private List<String> tagList;
 
         @ApiModelProperty(notes = "좋아요 개수",required = true,example = "123")
         private Long likeCount;
@@ -110,7 +112,7 @@ public class BoardRes {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "04-02 OOTD 게시판 이미지 좌표 리스트 👗 API Response #FRAME OOTD 04-02")
+    @ApiModel(value = "04-02 OOTD 게시판 이미지 좌표 리스트 👗 API Response #FRAME OOTD 04-02" )
     public static class ImgTagList{
         @ApiModelProperty(notes = "imgId",required = true,example = "1")
         private Long imgId;
@@ -129,7 +131,7 @@ public class BoardRes {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "04-03 OOTD  게시판 댓글 조회 👗 API Response #FRAME OOTD 04-02")
+    @ApiModel(value = "04-06 OOTD  게시판 댓글 조회 👗 API Response #FRAME OOTD 04-02")
     public static class BoardComment {
         @ApiModelProperty(notes = "댓글 id",required = true,example = "1")
         private  Long commentId;
@@ -145,6 +147,7 @@ public class BoardRes {
         private String commentTime;
         @ApiModelProperty(notes = "자기 댓글 유무",required = true,example = "true")
         private boolean isMy;
-
     }
+
+
 }
