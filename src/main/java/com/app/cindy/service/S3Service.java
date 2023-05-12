@@ -1,5 +1,6 @@
 package com.app.cindy.service;
 
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
@@ -8,6 +9,8 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.app.cindy.exception.BadRequestException;
+import com.app.cindy.exception.BaseException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,6 +22,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import static com.app.cindy.constants.CommonResponseStatus.S3_DELETE_ERROR;
 
 @Service
 @RequiredArgsConstructor
@@ -90,6 +95,26 @@ public class S3Service {
             //throw new PrivateException(Code.WRONG_IMAGE_FORMAT);
         }
         return fileName.substring(fileName.lastIndexOf("."));
+    }
+
+    public void fileDelete(String fileUrl) throws BaseException {
+        try{
+            String fileKey = fileUrl.substring(52);
+            final AmazonS3 s3 = AmazonS3ClientBuilder.standard().withRegion(region).build();
+
+            try {
+                System.out.println("File Delete : " + fileKey);
+                s3.deleteObject(bucket, fileKey);
+            } catch (AmazonServiceException e) {
+                System.err.println(e.getErrorMessage());
+                System.exit(1);
+            }
+
+            System.out.println(String.format("[%s] deletion complete", fileKey));
+
+        } catch (Exception exception) {
+            throw new BadRequestException(S3_DELETE_ERROR);
+        }
     }
 
 }

@@ -56,6 +56,12 @@ public class BoardReq {
         @ApiModelProperty(notes = "경도", required = true, example = "56.78")
         private double longitude;
 
+        @ApiModelProperty(notes = "지울 이미지 아이디 리스트", required = true, example = "15")
+        private List<Long> deleteImgUrlIds;
+
+        @ApiModelProperty(notes = "게시물 id", required = true, example = "10")
+        private Long boardId;
+
     }
 
     @NoArgsConstructor

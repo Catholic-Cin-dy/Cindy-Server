@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface BoardImgTagRepository extends JpaRepository<BoardImgTag,Long> {
     List<BoardImgTag> findByImgId(Long id);
+
+
 }
