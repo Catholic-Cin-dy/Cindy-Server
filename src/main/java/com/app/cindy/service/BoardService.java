@@ -146,6 +146,39 @@ public class BoardService {
 
     }
 
+    public void updateBoard(Long userId, List<String> imgPaths, BoardReq.UpdateBoard updateBoard) {
+        Board board = boardRepository.getOne(updateBoard.getBoardId());
+        board.updateBoard(updateBoard.getTitle(),updateBoard.getContent(),updateBoard.getLatitude(),updateBoard.getLongitude());
+        boardRepository.save(board);
+
+        List<String> imgList = new ArrayList<>();
+        int sequence = boardImgRepository.findImgSequenceByBoardId(updateBoard.getBoardId());
+        System.out.println("마지막 시퀀스 : " + sequence);
+        for(int i=0;i<updateBoard.getImgList().size();i++){
+            BoardImg boardImg = new BoardImg(imgPaths.get(i),updateBoard.getBoardId(),sequence);
+            sequence++;
+            Long boardImgId = boardImgRepository.save(boardImg).getId();
+            if(updateBoard.getImgList().get(i).getImgId() != null){
+                BoardImgTag boardImgTag = BoardImgTag.builder()
+                        .imgId(boardImgId)
+                        .brandId(updateBoard.getImgList().get(i).getBrandId())
+                        .x(updateBoard.getImgList().get(i).getX())
+                        .y(updateBoard.getImgList().get(i).getY())
+                        .build();
+                boardImgTagRepository.save(boardImgTag);
+
+            }
+            imgList.add(boardImg.getImgUrl());
+
+        }
+    }
+
+    public void fileDelete(Long deleteImgUrlId) {
+        String deleteImgUrl = boardImgRepository.findImgUrlByboardImgId(deleteImgUrlId);
+        s3Service.fileDelete(deleteImgUrl);
+        boardImgRepository.deleteById(deleteImgUrlId);
+    }
+  
     public boolean existsBoardByBoardId(Long boardId) {
         return boardRepository.existsById(boardId);
     }
