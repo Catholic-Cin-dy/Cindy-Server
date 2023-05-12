@@ -135,22 +135,26 @@ public class BoardController {
     @PatchMapping(value = "/update/{userId}/{boardId}" ,consumes = {"multipart/form-data"})
     @ApiOperation(value = "04-03 ootd 게시판 수정 👗 API #FRAME OOTD 04", notes = "")
     public CommonResponse<String> setBoardUpdate(@AuthenticationPrincipal User user,
-                                           @RequestPart("postBoard") BoardReq.PostBoard postBoard,
+                                           @RequestPart("updateBoard") BoardReq.UpdateBoard updateBoard,
                                            @RequestPart("imgUrl") List<MultipartFile> multipartFiles) throws BaseException, IOException {
         Long userId = user.getId();
 
-        if (postBoard.getTitle() == null) {
+        if (updateBoard.getTitle() == null) {
             throw new BadRequestException(BOARD_NOT_WRITE_TITLE);
         }
-        if (postBoard.getContent() == null) {
+        if (updateBoard.getContent() == null) {
             throw new BadRequestException(BOARD_NOT_WRITE_CONTENT);
         }
         if (multipartFiles.get(0) == null) {
             throw new BadRequestException(BOARD_NOT_UPLOAD_IMG);
         }
+        for(Long deleteImgUrlId : updateBoard.getDeleteImgUrlIds()) {
+            boardService.fileDelete(deleteImgUrlId);
+        }
+
         List<String> imgPaths = s3Service.upload(multipartFiles);
         System.out.println("IMG 경로들 : " + imgPaths);
-        boardService.setBoard(userId, imgPaths, postBoard);
+        boardService.updateBoard(userId, imgPaths, updateBoard);
         return CommonResponse.onSuccess("수정 완료.");
     }
 

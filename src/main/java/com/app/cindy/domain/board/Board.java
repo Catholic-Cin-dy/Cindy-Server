@@ -42,6 +42,11 @@ public class Board extends BaseEntity {
     @Column(name="longitude")
     private double longitude;
 
-
+    public void updateBoard(String title,String content,double latitude, double longitude){
+        this.title = title;
+        this.content = content;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 
 }

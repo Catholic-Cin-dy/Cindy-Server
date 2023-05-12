@@ -9,4 +9,10 @@ import java.util.List;
 public interface BoardImgRepository extends JpaRepository<BoardImg, Long> {
     @Query("select bi from BoardImg bi join fetch bi.board b join fetch b.user ")
     List<BoardImg> findByBoardId(Long boardId);
+
+    @Query(value = "select BI.img_url'imgurl' from BoardImg BI where BI.id=:boardImgId" ,nativeQuery = true)
+    String findImgUrlByboardImgId(Long boardImgId);
+
+    @Query(value = "select BI.sequence'sequence' from BoardImg BI where board_id=:boardId order by BI.sequence desc limit 1", nativeQuery = true)
+    int findImgSequenceByBoardId(Long boardId);
 }

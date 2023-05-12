@@ -6,6 +6,8 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "BoardImg")
@@ -31,6 +33,9 @@ public class BoardImg extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "board_id", nullable = false,insertable=false, updatable=false)
     private Board board;
+
+    @OneToMany(mappedBy = "boardImg",  cascade = CascadeType.REMOVE)
+    private List<BoardImgTag> boardImgTag=new ArrayList<>();
 
     @Column(name="board_id")
     private Long boardId;
