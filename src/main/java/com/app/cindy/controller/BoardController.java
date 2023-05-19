@@ -152,7 +152,7 @@ public class BoardController {
 
     @PatchMapping(value = "/update/{userId}/{boardId}" ,consumes = {"multipart/form-data"})
     @ApiOperation(value = "04-03 ootd 게시판 수정 👗 API #FRAME OOTD 04", notes = "")
-    public CommonResponse<String> setBoardUpdate(@AuthenticationPrincipal User user,
+    public CommonResponse<String> updateBoard(@AuthenticationPrincipal User user,
                                            @RequestPart("updateBoard") BoardReq.UpdateBoard updateBoard,
                                            @RequestPart("imgUrl") List<MultipartFile> multipartFiles) throws BaseException, IOException {
         Long userId = user.getId();
@@ -174,6 +174,13 @@ public class BoardController {
         System.out.println("IMG 경로들 : " + imgPaths);
         boardService.updateBoard(userId, imgPaths, updateBoard);
         return CommonResponse.onSuccess("수정 완료.");
+    }
+
+    @DeleteMapping(value = "/delete/{boardId}")
+    @ApiOperation(value = "04-05 ootd 게시판 삭제 👗 API #FRAME OOTD 05", notes = "")
+    public CommonResponse<String> deleteBoard(@AuthenticationPrincipal User user, @PathVariable("boardId") Long boardId) throws BaseException {
+        boardService.deleteBoard(boardId);
+        return CommonResponse.onSuccess("삭제 완료.");
     }
 
 
