@@ -106,6 +106,24 @@ public class BoardController {
         return CommonResponse.onSuccess("댓글 작성 완료");
     }
 
+    @PatchMapping("/comments")
+    @ApiOperation(value = "04-08 게시판 댓글 수정 👗 API #FRAME OOTD 03", notes = "")
+    public CommonResponse<String> modifyComment(@AuthenticationPrincipal User user,@RequestBody BoardReq.ModifyComment comment) {
+        if(!commentService.existsCommentByCommentId(comment.getCommentId()))throw new BadRequestException(NOT_EXIST_COMMENT);
+        Long userId = user.getId();
+        commentService.modifyComment(userId,comment);
+        return CommonResponse.onSuccess("댓글 수정 완료");
+    }
+
+    @DeleteMapping("/comments/{commentId}")
+    @ApiOperation(value = "04-09 게시판 댓글 삭제 👗 API #FRAME OOTD 03", notes = "")
+    public CommonResponse<String> deleteComment(@AuthenticationPrincipal User user,@PathVariable("commentId") Long commentId) {
+        commentService.checkComment(user.getId(),commentId);
+        commentService.deleteComment(commentId);
+        return CommonResponse.onSuccess("댓글 수정 완료");
+    }
+
+
     @PatchMapping("/like/{boardId}")
     @ApiOperation(value = "04-10 ootd 게시판 좋아요 👗", notes = "")
     public CommonResponse<String> likeBoard(@AuthenticationPrincipal User user,@Parameter(description ="boardId 값 보내주세요",example = "1") @PathVariable("boardId") Long boardId){

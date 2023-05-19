@@ -47,4 +47,10 @@ public class Comment extends BaseEntity {
     @ColumnDefault(value="true")
     private boolean status;
 
+
+    public void modifyComment(String comment){
+        this.content=comment;
+    }
+
+
 }
