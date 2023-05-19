@@ -108,11 +108,9 @@ public enum CommonResponseStatus {
     BOARD_NOT_WRITE_CONTENT(BAD_REQUEST,"B002","내용을 입력하세요."),
     BOARD_NOT_UPLOAD_IMG(BAD_REQUEST,"B003","업로드할 사진이 없습니다."),
     NOT_EXIST_BOARD(BAD_REQUEST,"B004","존재하는 게시글이 없습니다."),
-
-    S3_DELETE_ERROR(BAD_REQUEST,"B004","사진 삭제 불가.")
-
-
-    ;
+    NOT_AUTHORIZATION_DELETE(BAD_REQUEST,"B005","접근 할 권한이 없습니다."),
+    NOT_EXIST_COMMENT(BAD_REQUEST,"B006","존재하지 않는 댓글입니다."),
+    S3_DELETE_ERROR(BAD_REQUEST,"B007","사진 삭제 불가.");
 
 
 
