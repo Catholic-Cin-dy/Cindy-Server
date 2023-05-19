@@ -99,7 +99,7 @@ public class S3Service {
 
     public void fileDelete(String fileUrl) throws BaseException {
         try{
-            String fileKey = fileUrl.substring(52);
+            String fileKey = fileUrl.substring(53);
             final AmazonS3 s3 = AmazonS3ClientBuilder.standard().withRegion(region).build();
 
             try {

@@ -202,5 +202,11 @@ public class BoardService {
         return boardHashTags.stream().map(BoardHashTag::getTag).collect(Collectors.toList());
     }
 
-
+    public void deleteBoard(Long boardId) {
+        List<Long> deleteImgIdList = boardImgRepository.findImgIdByBoardId(boardId);
+        for(Long deleteImgId : deleteImgIdList){
+            fileDelete(deleteImgId);
+        }
+        boardRepository.deleteById(boardId);
+    }
 }

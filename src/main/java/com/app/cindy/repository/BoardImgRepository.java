@@ -15,4 +15,7 @@ public interface BoardImgRepository extends JpaRepository<BoardImg, Long> {
 
     @Query(value = "select BI.sequence'sequence' from BoardImg BI where board_id=:boardId order by BI.sequence desc limit 1", nativeQuery = true)
     int findImgSequenceByBoardId(Long boardId);
+
+    @Query(value = "select BI.id'id' from BoardImg BI where board_id=:boardId", nativeQuery = true)
+    List<Long> findImgIdByBoardId(Long boardId);
 }
