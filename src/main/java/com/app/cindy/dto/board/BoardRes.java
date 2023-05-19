@@ -68,6 +68,7 @@ public class BoardRes {
 
         @ApiModelProperty(notes = "게시글 사진 리스트",required = true,example = "")
         private List<ImgList> imgList;
+
         @ApiModelProperty(notes = "게시글 태그 리스트",required = true,example = "\"샤넬\",\"이뻐요\"")
         private List<String> tagList;
 
@@ -77,7 +78,6 @@ public class BoardRes {
         @ApiModelProperty(notes = "좋아요 누른 여부",required = true,example = "ture")
         private boolean likeCheck;
 
-
         @ApiModelProperty(notes = "댓글 수",required = true,example = "123")
         private Long commentCount;
 
@@ -86,9 +86,6 @@ public class BoardRes {
 
         @ApiModelProperty(notes = "자기 게시글 유무",required = true,example = "true")
         private boolean isMy;
-
-
-
     }
     @Getter
     @Setter
