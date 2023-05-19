@@ -201,4 +201,6 @@ public class BoardService {
 
         return boardHashTags.stream().map(BoardHashTag::getTag).collect(Collectors.toList());
     }
+
+
 }

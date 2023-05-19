@@ -106,4 +106,16 @@ public class BoardReq {
         @ApiModelProperty(notes = "댓글 내용", required = true, example = "오늘의 ootd 이뻐요")
         private String comment;
     }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Setter
+    @Getter
+    @ApiModel(value = "04-07 게시판 댓글 수정 Request👗")
+    public static class ModifyComment {
+        @ApiModelProperty(notes = "1", required = true, example = "게시판 아이디")
+        private Long commentId;
+        @ApiModelProperty(notes = "댓글 내용", required = true, example = "오늘의 ootd 이뻐요")
+        private String comment;
+    }
 }
