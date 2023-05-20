@@ -38,9 +38,9 @@ public class ProductController {
         System.out.println(productList);
         return CommonResponse.onSuccess(productList);
     }
-/*
+
     @GetMapping("/search")
-    @ApiOperation(value = "03-02 상품 검색 조회. 아직 구현 안했어요🏬 API Response #FRAME PRODUCT 01", notes = "")
+    @ApiOperation(value = "03-02 상품 검색 조회.🏬 API Response #FRAME PRODUCT 01", notes = "")
     public CommonResponse<PageResponse<List<ProductRes.ProductList>>> getProductListByContent(@AuthenticationPrincipal User user,
                                                                                      @Parameter(description = "페이지", example = "0") @RequestParam(required = false,defaultValue = "0" ) @Min(value = 0) Integer page,
                                                                                      @Parameter(description = "페이지 사이즈", example = "10") @RequestParam(required = false,defaultValue = "10")  Integer size,
@@ -49,7 +49,7 @@ public class ProductController {
         return CommonResponse.onSuccess(productList);
     }
 
- */
+
 
 
     @GetMapping("/{productId}")
