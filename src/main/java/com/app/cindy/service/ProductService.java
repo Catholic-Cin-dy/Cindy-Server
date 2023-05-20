@@ -57,7 +57,25 @@ public class ProductService {
     }
 
     public PageResponse<List<ProductRes.ProductList>> getProductListByContent(String content, Integer page, Integer size, Long id) {
-        return null;
+        Pageable pageReq = PageRequest.of(page, size);
+
+        List<ProductRes.ProductList> productList=new ArrayList<>();
+
+        Page<ProductRepository.GetProductList> searchList = productRepository.GetProductListByContent(id,content,pageReq);
+
+        searchList.forEach(
+                result -> productList.add(
+                        new ProductRes.ProductList(
+                                result.getProductId(),
+                                result.getBrandName(),
+                                result.getName(),
+                                result.getImgUrl(),
+                                result.getBookMark()
+                        )
+                )
+        );
+
+        return new PageResponse<>(searchList.isLast(),productList);
     }
 
     public ProductRes.ProductDetail getProductDetail(Long id, Long productId) {
