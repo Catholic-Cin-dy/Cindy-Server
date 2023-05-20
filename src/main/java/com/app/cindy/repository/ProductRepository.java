@@ -72,6 +72,15 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "order by categoryScore desc LIMIT 30",nativeQuery = true)
     List<GetRecommendProductList> findRecommendProduct(List<Long> userCategoryList);
 
+    @Query(value=
+            "select  P.id'productId',B.name'brandName',P.name,P.img_url'imgUrl'," +
+                    " IF((select exists(select * from ProductLike PL where PL.user_id=:userId and PL.product_id=P.id)),'true','false')'bookmark' " +
+                    " from Product P " +
+                    " join Brand B on B.id = P.brand_id " +
+                    " join Category C on C.id=P.category_id where P.name LIKE concat('%',:content,'%') group by P.id ",nativeQuery = true,
+            countQuery = "select count(*) from Product P where P.name LIKE concat('%',:content,'%') ")
+    Page<GetProductList> GetProductListByContent(@Param("userId") Long userId,@Param("content") String content, Pageable pageReq);
+
     //List<GetProductList> getProductViewingList(Long userId, List<Long> productIds);
 
     interface GetProductList {

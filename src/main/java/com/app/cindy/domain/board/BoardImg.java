@@ -34,9 +34,6 @@ public class BoardImg extends BaseEntity {
     @JoinColumn(name = "board_id", nullable = false,insertable=false, updatable=false)
     private Board board;
 
-    @OneToMany(mappedBy = "boardImg",  cascade = CascadeType.REMOVE)
-    private List<BoardImgTag> boardImgTag=new ArrayList<>();
-
     @Column(name="board_id")
     private Long boardId;
 
