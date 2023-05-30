@@ -109,7 +109,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
             "                           when TIMESTAMPDIFF(hour, B.created_at, now()) < 24\n" +
             "                              then concat(TIMESTAMPDIFF(hour, B.created_at, now()), '시간 전')\n" +
             "                          end end as                                          boardTime," +
-            " IF((select exists(select * from BoardLike BL where BL.user_id=:userId and B.id=:boardId)),'true','false')'likeCheck'\n" +
+            " IF((select exists(select * from BoardLike BL where BL.user_id=:userId and BL.board_id=:boardId)),'true','false')'likeCheck'\n" +
             "from Board B \n" +
             "join User U on B.user_id = U.id\n" +
             "join BoardImg BI on B.id = BI.board_id where B.id=:boardId",nativeQuery = true)
