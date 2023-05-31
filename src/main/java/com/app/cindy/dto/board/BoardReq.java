@@ -25,6 +25,7 @@ public class BoardReq {
 
         @ApiModelProperty(notes = "해당 API는 포스트맨으로 해주세요!", required = true, example = "포스트맨으로 해야함!")
         List<img> imgList;
+
         @ApiModelProperty(notes = "게시판 글 내용", required = true, example = "고프코어 느낌을 내봤습니다~")
         private String content;
 
