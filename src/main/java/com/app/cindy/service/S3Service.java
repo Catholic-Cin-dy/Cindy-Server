@@ -117,4 +117,21 @@ public class S3Service {
         }
     }
 
+    public void uploadImg(MultipartFile file) {
+
+        // forEach 구문을 통해 multipartFile로 넘어온 파일들 하나씩 fileNameList에 추가
+            String fileName = createFileName(file.getOriginalFilename());
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            objectMetadata.setContentLength(file.getSize());
+            objectMetadata.setContentType(file.getContentType());
+
+            try (InputStream inputStream = file.getInputStream()) {
+                s3Client.putObject(new PutObjectRequest(bucket + "/post/image", fileName, inputStream, objectMetadata)
+                        .withCannedAcl(CannedAccessControlList.PublicRead));
+            } catch (IOException e) {
+                //throw new PrivateException(Code.IMAGE_UPLOAD_ERROR);
+            }
+        }
 }
+
+

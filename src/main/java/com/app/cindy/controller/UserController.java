@@ -1,6 +1,7 @@
 package com.app.cindy.controller;
 
 import com.app.cindy.exception.BadRequestException;
+import com.app.cindy.service.S3Service;
 import com.app.cindy.service.UserService;
 import com.app.cindy.common.CommonResponse;
 import com.app.cindy.dto.user.UserReq;
@@ -8,6 +9,8 @@ import com.app.cindy.dto.user.UserRes;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import retrofit2.http.Multipart;
 
 import javax.validation.Valid;
 
@@ -21,6 +24,7 @@ import static com.app.cindy.constants.CommonResponseStatus.*;
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
+    private final S3Service s3Service;
 
     @PostMapping(value = "/signup")
     @ApiOperation(value = "01-01 임시 회원가입 🔑", notes = "")
@@ -34,6 +38,16 @@ public class UserController {
         UserRes.Token signUp = userService.signUp(signupUser);
 
         return CommonResponse.onSuccess(signUp);
+
+    }
+
+    @PostMapping(value = "/img")
+    @ApiOperation(value = "01-01 임시 회원가입 🔑", notes = "")
+    public CommonResponse<String> uploadTest(@RequestParam MultipartFile multipart) throws IOException {
+
+        s3Service.uploadImg(multipart);
+
+        return CommonResponse.onSuccess("이미지 저장");
 
     }
 
