@@ -13,9 +13,11 @@ import com.app.cindy.service.CommentService;
 import com.app.cindy.service.S3Service;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.parser.ParseException;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +25,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.Min;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.app.cindy.constants.CommonResponseStatus.*;
@@ -60,6 +64,8 @@ public class BoardController {
         return  CommonResponse.onSuccess(boardDetail);
     }
 
+
+
     @GetMapping("/comments/{boardId}")
     @ApiOperation(value = "04-06 ootd 게시판 상세 조회 댓글 조회 👗 API #FRAME OOTD 02", notes = "게시판 상세 조회 API 입니다. 04-03 댓글 상세조회와 함께 세트입니당")
     public CommonResponse<PageResponse<List<BoardRes.BoardComment>>> getBoardComments(@AuthenticationPrincipal User user,
@@ -82,6 +88,7 @@ public class BoardController {
                                            @RequestPart("imgUrl") List<MultipartFile> multipartFiles) throws BaseException, IOException {
         Long userId = user.getId();
 
+
         if (postBoard.getTitle() == null) {
             throw new BadRequestException(BOARD_NOT_WRITE_TITLE);
         }
@@ -91,6 +98,7 @@ public class BoardController {
         if (multipartFiles.get(0) == null) {
             throw new BadRequestException(BOARD_NOT_UPLOAD_IMG);
         }
+        System.out.println("S3 저장 전 IMG 경로들 : " + multipartFiles);
         List<String> imgPaths = s3Service.upload(multipartFiles);
         System.out.println("IMG 경로들 : " + imgPaths);
         boardService.setBoard(userId, imgPaths, postBoard);
@@ -182,6 +190,49 @@ public class BoardController {
         boardService.deleteBoard(boardId);
         return CommonResponse.onSuccess("삭제 완료.");
     }
+
+
+    @PostMapping(value = "/write",consumes = {"multipart/form-data"})
+    @ApiOperation(value = "04-04 ootd 게시판 작성 👗 API #FRAME OOTD 03 v2", notes = "")
+    public CommonResponse<String> postBoard(@AuthenticationPrincipal User user,@ModelAttribute BoardReq.SaveBoardV2 postBoard) throws BaseException, IOException, ParseException {
+        Long userId = user.getId();
+
+
+        JSONParser parser = new JSONParser();
+        JSONArray jsonArray = null;
+        try {
+            // 문자열을 JSONArray로 파싱
+            jsonArray = (JSONArray) parser.parse(postBoard.getImgTagList());
+
+
+            // 각 JSONObject에 접근
+
+
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(postBoard.getImgList());
+
+        if (postBoard.getTitle() == null) {
+            throw new BadRequestException(BOARD_NOT_WRITE_TITLE);
+        }
+        if (postBoard.getContent() == null) {
+            throw new BadRequestException(BOARD_NOT_WRITE_CONTENT);
+        }
+        if (postBoard.getImgFiles().get(0) == null) {
+            throw new BadRequestException(BOARD_NOT_UPLOAD_IMG);
+        }
+
+        List<String> imgPaths = s3Service.upload(postBoard.getImgFiles());
+        System.out.println("IMG 경로들 : " + imgPaths);
+        boardService.saveBoard(userId,imgPaths , postBoard, jsonArray);
+
+
+        return CommonResponse.onSuccess("생성 완료.");
+    }
+
 
 
 }

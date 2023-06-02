@@ -14,12 +14,13 @@ import com.app.cindy.dto.user.UserReq;
 import com.app.cindy.repository.BoardImgRepository;
 import com.app.cindy.repository.BoardImgTagRepository;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.Min;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -73,6 +74,7 @@ public class BoardService {
 
     public BoardRes.BoardDetail getBoardDetail(Long userId, Long boardId) {
         List<BoardImg> boardImg = boardImgRepository.findByBoardId(boardId);
+        System.out.println(boardImg.stream().map(e->e.getImgUrl()).collect(Collectors.toList()));
         List<BoardRes.ImgList> imgList = new ArrayList<>();
         BoardRepository.GetBoardDetail board = boardRepository.getBoardDetail(userId,boardId);
 
@@ -209,4 +211,85 @@ public class BoardService {
         }
         boardRepository.deleteById(boardId);
     }
+
+    public void saveBoard(Long userId, List<String> imgPaths, BoardReq.SaveBoardV2 postBoard, JSONArray jsonArray) {
+        Board board = Board.builder()
+                .userId(userId)
+                .title(postBoard.getTitle())
+                .content(postBoard.getContent())
+                .latitude(postBoard.getLatitude())
+                .longitude(postBoard.getLongitude())
+                .build();
+
+        Long boardId = boardRepository.save(board).getId();
+
+
+        int sequence = 1;
+
+        for (int i = 0; i < jsonArray.size(); i++) {
+            BoardImg boardImg = new BoardImg(imgPaths.get(i),boardId,sequence);
+            sequence++;
+            Long boardImgId = boardImgRepository.save(boardImg).getId();
+
+            JSONObject jsonObject = (JSONObject) jsonArray.get(i);
+            JSONArray imgTagsArray = (JSONArray) jsonObject.get("imgTags");
+
+            System.out.println(i);
+
+            for (Object o : imgTagsArray) {
+                JSONObject imgTagsObject = (JSONObject) o;
+
+                Object brandId = imgTagsObject.get("brandId");
+                double x;
+                double y;
+
+
+                Object xObject = imgTagsObject.get("x");
+                if (xObject instanceof Double) {
+                    x = (double) xObject;
+                } else if (xObject instanceof Integer) {
+                    x = ((Integer) xObject).doubleValue();
+                } else {
+                    // Handle the case when the value is not a valid number
+                    // For example, throw an exception or set a default value
+                    x = 0.0;
+                }
+
+                Object yObject = imgTagsObject.get("y");
+                if (yObject instanceof Double) {
+                    y = (double) yObject;
+                } else if (yObject instanceof Integer) {
+                    y = ((Integer) yObject).doubleValue();
+                } else {
+                    // Handle the case when the value is not a valid number
+                    // For example, throw an exception or set a default value
+                    y = 0.0;
+                }
+
+                BoardImgTag boardImgTag = BoardImgTag.builder()
+                        .imgId(boardImgId)
+                        .brandId((Long) brandId)
+                        .x(x)
+                        .y(y)
+                        .build();
+
+
+                boardImgTagRepository.save(boardImgTag);
+            }
+        }
+
+
+        for(String tag : postBoard.getTags()){
+            BoardHashTag boardHashTag = BoardHashTag.builder().boardId(boardId).tag(tag).build();
+
+            boardHashTagRepository.save(boardHashTag);
+        }
+
+
+
+
+
+
+    }
+
 }
