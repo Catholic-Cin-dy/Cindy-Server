@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface BoardImgRepository extends JpaRepository<BoardImg, Long> {
-    @Query("select bi from BoardImg bi join fetch bi.board b join fetch b.user ")
+    @Query("select bi from BoardImg bi join fetch bi.board b join fetch b.user where bi.boardId=:boardId")
     List<BoardImg> findByBoardId(Long boardId);
 
     @Query(value = "select BI.img_url'imgurl' from BoardImg BI where BI.id=:boardImgId" ,nativeQuery = true)
