@@ -23,8 +23,34 @@ public class BoardReq {
         @ApiModelProperty(notes = "게시판 제목", required = true, example = "오늘의 ootd!")
         private String title;
 
+        @ApiModelProperty(notes = "게시판 글 내용", required = true, example = "고프코어 느낌을 내봤습니다~")
+        private String content;
+
+        @ApiModelProperty(notes = "위도", required = true, example = "12.34")
+        private double latitude;
+
+        @ApiModelProperty(notes = "경도", required = true, example = "56.78")
+        private double longitude;
+
         @ApiModelProperty(notes = "해당 API는 포스트맨으로 해주세요!", required = true, example = "포스트맨으로 해야함!")
         List<img> imgList;
+
+        @ApiModelProperty(notes="태그 리스트",required = true,example = "[\"샤넬\",\"샤넬 이뻐요\"]")
+        private List<String> tags;
+
+        private List<MultipartFile> imgFiles;
+
+    }
+
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Setter
+    @Getter
+    @ApiModel(value = "04-04 게시판 작성 Request👗 v2")
+    public static class SaveBoardV2{
+        @ApiModelProperty(notes = "게시판 제목", required = true, example = "오늘의 ootd!")
+        private String title;
 
         @ApiModelProperty(notes = "게시판 글 내용", required = true, example = "고프코어 느낌을 내봤습니다~")
         private String content;
@@ -35,11 +61,17 @@ public class BoardReq {
         @ApiModelProperty(notes = "경도", required = true, example = "56.78")
         private double longitude;
 
+        @ApiModelProperty(notes = "해당 API는 포스트맨으로 해주세요!", required = true, example = "포스트맨으로 해야함!")
+        List<img> imgList;
+
+        private String imgTagList;
+
         @ApiModelProperty(notes="태그 리스트",required = true,example = "[\"샤넬\",\"샤넬 이뻐요\"]")
         private List<String> tags;
 
-    }
+        private List<MultipartFile> imgFiles;
 
+    }
     @NoArgsConstructor
     @AllArgsConstructor
     @Setter
