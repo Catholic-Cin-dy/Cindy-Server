@@ -22,6 +22,10 @@ public class BoardHashTag extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "board_id", nullable = false,insertable=false, updatable=false)
+    private Board board;
+
     @Column(name = "board_id")
     private Long boardId;
 
