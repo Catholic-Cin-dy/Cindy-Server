@@ -64,6 +64,8 @@ public class BoardController {
         return  CommonResponse.onSuccess(boardDetail);
     }
 
+
+
     @GetMapping("/comments/{boardId}")
     @ApiOperation(value = "04-06 ootd 게시판 상세 조회 댓글 조회 👗 API #FRAME OOTD 02", notes = "게시판 상세 조회 API 입니다. 04-03 댓글 상세조회와 함께 세트입니당")
     public CommonResponse<PageResponse<List<BoardRes.BoardComment>>> getBoardComments(@AuthenticationPrincipal User user,
@@ -96,6 +98,7 @@ public class BoardController {
         if (multipartFiles.get(0) == null) {
             throw new BadRequestException(BOARD_NOT_UPLOAD_IMG);
         }
+        System.out.println("S3 저장 전 IMG 경로들 : " + multipartFiles);
         List<String> imgPaths = s3Service.upload(multipartFiles);
         System.out.println("IMG 경로들 : " + imgPaths);
         boardService.setBoard(userId, imgPaths, postBoard);
