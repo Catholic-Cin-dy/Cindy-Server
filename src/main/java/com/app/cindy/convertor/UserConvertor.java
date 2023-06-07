@@ -44,4 +44,11 @@ public class UserConvertor {
                 .accessToken(token.getAccessToken())
                 .build();
     }
+
+    public static UserRes.MyPage MyPage(User user) {
+        return UserRes.MyPage.builder()
+                .userId(user.getId())
+                .name(user.getNickname())
+                .profileImgUrl(user.getProfileImgUrl()).build();
+    }
 }
