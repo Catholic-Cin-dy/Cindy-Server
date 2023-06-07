@@ -1,13 +1,17 @@
 package com.app.cindy.controller;
 
+import com.app.cindy.convertor.UserConvertor;
+import com.app.cindy.domain.user.User;
 import com.app.cindy.exception.BadRequestException;
 import com.app.cindy.service.S3Service;
 import com.app.cindy.service.UserService;
 import com.app.cindy.common.CommonResponse;
 import com.app.cindy.dto.user.UserReq;
 import com.app.cindy.dto.user.UserRes;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import retrofit2.http.Multipart;
@@ -22,10 +26,11 @@ import static com.app.cindy.constants.CommonResponseStatus.*;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/users")
-public class UserController {
-    private final UserService userService;
-    private final S3Service s3Service;
+@Api(tags = "05-유저 관련 🚹 API")
 
+public class UserController {
+
+    /*
     @PostMapping(value = "/signup")
     @ApiOperation(value = "01-01 임시 회원가입 🔑", notes = "")
     public CommonResponse<UserRes.Token> signup(@RequestBody UserReq.SignupUser signupUser) throws IOException {
@@ -51,6 +56,8 @@ public class UserController {
 
     }
 
+
+
     @ApiOperation(value = "로그인", notes = "로그인")
     @PostMapping("/login")
     public CommonResponse<UserRes.Token> login(@Valid @RequestBody UserReq.LoginUserInfo loginUserInfo){
@@ -67,35 +74,14 @@ public class UserController {
 
     }
 
-    /*
-    @ApiOperation(value = "닉네임 중복체크", notes = "닉네임 중복체크")
-    @GetMapping("/check/nickname")
-    public CommonResponse<String> checkNickName(@RequestParam("nickname") String nickName) {
-        String result="";
-        if(userService.checkNickName(nickName)){
-            return new CommonResponse<>(USERS_EXISTS_NICKNAME);
-        }
-        else{
-            result="사용 가능합니다.";
-        }
-        return new CommonResponse<>(result);
-
-    }
-
-    @ApiOperation(value = "유저 아이디 중복체크", notes = "유저 아이디 중복체크")
-    @GetMapping("/check/username")
-    public CommonResponse<String> checkUserId(@RequestParam("username") String username){
-        String result="";
-        if(userService.checkUserId(username)){
-            return new CommonResponse<>(USERS_EXISTS_ID);
-        }
-        else{
-            result="사용 가능합니다.";
-        }
-        return new CommonResponse<>(result);
-
-    }
-
-
      */
+
+    @ApiOperation(value="마이페이지 정보 조회",notes="마이페이지 조회시 정보조회")
+    @GetMapping("/my")
+    public CommonResponse<UserRes.MyPage> getMyPage(@AuthenticationPrincipal User user){
+        UserRes.MyPage myPage = UserConvertor.MyPage(user);
+
+        return CommonResponse.onSuccess(myPage);
+    }
+
 }
