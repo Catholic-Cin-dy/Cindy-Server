@@ -35,8 +35,8 @@ public class BoardReq {
         @ApiModelProperty(notes = "해당 API는 포스트맨으로 해주세요!", required = true, example = "포스트맨으로 해야함!")
         List<img> imgList;
 
-        @ApiModelProperty(notes="태그 리스트",required = true,example = "[\"샤넬\",\"샤넬 이뻐요\"]")
-        private List<String> tags;
+//        @ApiModelProperty(notes="태그 리스트",required = true,example = "[\"샤넬\",\"샤넬 이뻐요\"]")
+//        private List<String> tags;
 
         private List<MultipartFile> imgFiles;
 
