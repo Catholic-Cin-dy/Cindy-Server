@@ -10,7 +10,9 @@ import com.app.cindy.exception.BadRequestException;
 import com.app.cindy.exception.BaseException;
 import com.app.cindy.service.BoardService;
 import com.app.cindy.service.CommentService;
+import com.app.cindy.service.RedisService;
 import com.app.cindy.service.S3Service;
+import io.lettuce.core.dynamic.annotation.CommandNaming;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.json.simple.JSONArray;
@@ -25,9 +27,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.Min;
 import java.io.IOException;
+import java.sql.Date;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import static com.app.cindy.constants.CommonResponseStatus.*;
 
@@ -40,6 +47,7 @@ public class BoardController {
     private final BoardService boardService;
     private final S3Service s3Service;
     private final CommentService commentService;
+    private final RedisService redisService;
 
     @PostMapping("")
     @ApiOperation(value = "04-01 ootd 게시판 조회 👗 API #FRAME OOTD 01", notes = "")
@@ -54,12 +62,24 @@ public class BoardController {
         return  CommonResponse.onSuccess(boardList);
     }
 
+    @PostMapping("/myBoard")
+    @ApiOperation(value = "04-01-01 내가 쓴 ootd 게시판 조회 👗 API #FRAME OOTD 01", notes = "")
+    public CommonResponse<PageResponse<List<BoardRes.BoardList>>> getMyBoardList(@AuthenticationPrincipal User user,
+                                                                               @Parameter(description = "페이지", example = "0") @RequestParam(required = false,defaultValue = "0" ) @Min(value = 0) Integer page,
+                                                                               @Parameter(description = "페이지 사이즈", example = "10") @RequestParam(required = false,defaultValue = "10")  Integer size,
+                                                                               @RequestBody(required = false) UserReq.Distance distance){
+        PageResponse<List<BoardRes.BoardList>> boardList = boardService.getMyBoardList(page,size,user.getId(),distance);
+
+        return  CommonResponse.onSuccess(boardList);
+    }
+
     @GetMapping("/{boardId}")
     @ApiOperation(value = "04-02 ootd 게시판 상세 조회 👗 API #FRAME OOTD 02", notes = "게시판 상세 조회 API 입니다. 04-03 댓글 상세조회와 함께 세트입니당")
     public CommonResponse<BoardRes.BoardDetail> getBoardDetail(@AuthenticationPrincipal User user,
                                                                @Parameter(description ="boardId 값 보내주세요",example = "1") @PathVariable("boardId") Long boardId){
         Long userId= user.getId();
         BoardRes.BoardDetail boardDetail = boardService.getBoardDetail(userId,boardId);
+        redisService.incrementViewCount(boardId);
 
         return  CommonResponse.onSuccess(boardDetail);
     }
@@ -81,14 +101,26 @@ public class BoardController {
         return  CommonResponse.onSuccess(boardComment);
     }
 
+    @GetMapping("/myBoardsComments/{userId}")
+    @ApiOperation(value = "내가 작성한 게시글의 댓글 모아보기", notes = "test")
+    public CommonResponse<PageResponse<List<BoardRes.MyBoardsComments>>> getMyBoardsComments(@AuthenticationPrincipal User user,
+                                                                                             @Parameter(description = "페이지", example = "0") @RequestParam(required = false,defaultValue = "0" ) @Min(value = 0) Integer page,
+                                                                                             @Parameter(description = "페이지 사이즈", example = "10") @RequestParam(required = false,defaultValue = "10")  Integer size){
+        Long userId = user.getId();
+        PageResponse<List<BoardRes.MyBoardsComments>> myBoardsComments = commentService.getMyBoardsComments(userId,page,size);
+        return  CommonResponse.onSuccess(myBoardsComments);
+
+    }
+
     @PostMapping(value = "/new" ,consumes = {"multipart/form-data"})
     @ApiOperation(value = "04-04 ootd 게시판 작성 👗 API #FRAME OOTD 03", notes = "")
     public CommonResponse<String> setBoard(@AuthenticationPrincipal User user,
                                            @RequestPart("postBoard") BoardReq.PostBoard postBoard,
                                            @RequestPart("imgUrl") List<MultipartFile> multipartFiles) throws BaseException, IOException {
+        LocalDateTime now = LocalDateTime.now();
+        Long longTime = now.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        System.out.println("API 호출 직 후 : " + longTime);
         Long userId = user.getId();
-
-
         if (postBoard.getTitle() == null) {
             throw new BadRequestException(BOARD_NOT_WRITE_TITLE);
         }
@@ -99,7 +131,14 @@ public class BoardController {
             throw new BadRequestException(BOARD_NOT_UPLOAD_IMG);
         }
         System.out.println("S3 저장 전 IMG 경로들 : " + multipartFiles);
-        List<String> imgPaths = s3Service.upload(multipartFiles);
+        List<CompletableFuture<String>> futures = multipartFiles.stream()
+                .map(file -> s3Service.uploadFile(file))
+                .collect(Collectors.toList());
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+        List<String> imgPaths = futures.stream()
+                .map(CompletableFuture::join)
+                .collect(Collectors.toList());
+//        List<String> imgPaths = s3Service.upload(multipartFiles);
         System.out.println("IMG 경로들 : " + imgPaths);
         boardService.setBoard(userId, imgPaths, postBoard);
         return CommonResponse.onSuccess("생성 완료.");

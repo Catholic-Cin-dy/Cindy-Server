@@ -16,11 +16,15 @@ import com.app.cindy.repository.BoardImgTagRepository;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -40,6 +44,9 @@ public class BoardService {
     private final BoardLikeRepository boardLikeRepository;
     private final BoardHashTagRepository boardHashTagRepository;
     private final S3Service s3Service;
+
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
 
     public PageResponse<List<BoardRes.BoardList>> getBoardList(Integer sort, Integer page, Integer size, Long userId, UserReq.Distance distance) {
         Pageable pageReq = PageRequest.of(page, size);
@@ -66,6 +73,30 @@ public class BoardService {
                                 result.getLikeCheck(),
                                 result.getBoardTime()
                                 )
+                )
+        );
+
+        return new PageResponse<>(board.isLast(),boardList);
+    }
+
+    public PageResponse<List<BoardRes.BoardList>> getMyBoardList(Integer page, Integer size, Long userId, UserReq.Distance distance) {
+        Pageable pageReq = PageRequest.of(page, size);
+        List<BoardRes.BoardList> boardList = new ArrayList<>();
+        Page<BoardRepository.GetBoardList> board = null;
+        board = boardRepository.findAllMyBoard(userId,pageReq);
+        board.forEach(
+                result -> boardList.add(
+                        new BoardRes.BoardList(
+                                result.getBoardId(),
+                                result.getTitle(),
+                                result.getWriter(),
+                                Stream.of(result.getBoardImg().split(",")).collect(Collectors.toList()),
+                                result.getProfileImg(),
+                                result.getLikeCnt(),
+                                result.getCommentCnt(),
+                                result.getLikeCheck(),
+                                result.getBoardTime()
+                        )
                 )
         );
 
@@ -124,24 +155,27 @@ public class BoardService {
             BoardImg boardImg = new BoardImg(imgPaths.get(i),boardId,sequence);
             sequence++;
             Long boardImgId = boardImgRepository.save(boardImg).getId();
-            if(postBoard.getImgList().get(i).getImgId() != null){
-                BoardImgTag boardImgTag = BoardImgTag.builder()
-                        .imgId(boardImgId)
-                        .brandId(postBoard.getImgList().get(i).getBrandId())
-                        .x(postBoard.getImgList().get(i).getX())
-                        .y(postBoard.getImgList().get(i).getY())
-                        .build();
-                System.out.println(i);
-                boardImgTagRepository.save(boardImgTag);
-            }
+//            if(postBoard.getImgList().get(i).getImgId() != null){
+            BoardImgTag boardImgTag = BoardImgTag.builder()
+                    .imgId(boardImgId)
+                    .brandId(postBoard.getImgList().get(i).getBrandId())
+                    .x(postBoard.getImgList().get(i).getX())
+                    .y(postBoard.getImgList().get(i).getY())
+                    .build();
+            boardImgTagRepository.save(boardImgTag);
+//            }
             imgList.add(boardImg.getImgUrl());
         }
 
-        for(String tag : postBoard.getTags()){
-            BoardHashTag boardHashTag = BoardHashTag.builder().boardId(boardId).tag(tag).build();
+        LocalDateTime now = LocalDateTime.now();
+        Long longTime = now.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        System.out.println("DB에 저장 후 : " + longTime);
 
-            boardHashTagRepository.save(boardHashTag);
-        }
+//        for(String tag : postBoard.getTags()){
+//            BoardHashTag boardHashTag = BoardHashTag.builder().boardId(boardId).tag(tag).build();
+//
+//            boardHashTagRepository.save(boardHashTag);
+//        }
 
 
 

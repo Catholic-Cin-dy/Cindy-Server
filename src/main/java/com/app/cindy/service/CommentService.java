@@ -1,11 +1,13 @@
 package com.app.cindy.service;
 
 import com.app.cindy.convertor.BoardConvertor;
+import com.app.cindy.domain.board.Board;
 import com.app.cindy.domain.board.Comment;
 import com.app.cindy.dto.PageResponse;
 import com.app.cindy.dto.board.BoardReq;
 import com.app.cindy.dto.board.BoardRes;
 import com.app.cindy.exception.BadRequestException;
+import com.app.cindy.repository.BoardRepository;
 import com.app.cindy.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,6 +28,7 @@ import static com.app.cindy.constants.CommonResponseStatus.NOT_EXIST_COMMENT;
 public class CommentService {
 
     private final CommentRepository commentRepository;
+    private final BoardRepository boardRepository;
 
     public PageResponse<List<BoardRes.BoardComment>> getBoardComments(Long userId, Long boardId, @Min(value = 0) Integer page, Integer size) {
         Pageable pageReq = PageRequest.of(page, size);
@@ -46,6 +49,32 @@ public class CommentService {
                 )
         );
         return new PageResponse<>(comment.isLast(),boardComment);
+    }
+
+    public PageResponse<List<BoardRes.MyBoardsComments>> getMyBoardsComments(Long userId, Integer page, Integer size) {
+        Pageable pageReq = PageRequest.of(page, size);
+        List<BoardRepository.GetBoardIdList> boardIdList = boardRepository.findByUserId(userId);
+        Page<CommentRepository.MyBoardsComments> comment = null;
+        List<BoardRes.MyBoardsComments> boardComment = new ArrayList<>();
+        for (BoardRepository.GetBoardIdList boardId : boardIdList) {
+            comment = commentRepository.getMyBoardsComments(boardId.getId(), pageReq);
+
+            comment.forEach(
+                    result -> boardComment.add(
+                            new BoardRes.MyBoardsComments(
+                                    result.getBoardId(),
+                                    result.getCommentId(),
+                                    result.getUserId(),
+                                    result.getProfileImgUrl(),
+                                    result.getNickName(),
+                                    result.getComment(),
+                                    result.getCommentTime(),
+                                    result.getUserId().equals(userId)
+                            )
+                    )
+            );
+        }
+        return new PageResponse<>(comment.isLast(), boardComment);
     }
 
     public void postComment(Long userId, BoardReq.Comment comment) {
@@ -77,4 +106,6 @@ public class CommentService {
     public boolean existsCommentByCommentId(Long commentId) {
         return commentRepository.existsById(commentId);
     }
+
+
 }

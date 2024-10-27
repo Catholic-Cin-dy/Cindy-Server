@@ -3,6 +3,7 @@ package com.app.cindy.domain.board;
 import com.app.cindy.domain.BaseEntity;
 import com.app.cindy.domain.user.User;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -18,6 +19,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @DynamicUpdate
 @DynamicInsert
+@BatchSize(size = 100)
 public class Comment extends BaseEntity {
     @Id
     @Column(name = "id")
@@ -34,7 +36,6 @@ public class Comment extends BaseEntity {
 
     @Column(name="user_id")
     private Long userId;
-
 
     @ManyToOne
     @JoinColumn(name = "board_id", nullable = false,insertable=false, updatable=false)

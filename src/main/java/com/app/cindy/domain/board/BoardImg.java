@@ -18,6 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @DynamicUpdate
 @DynamicInsert
+@ToString
 public class BoardImg extends BaseEntity {
     @Id
     @Column(name = "id")
@@ -31,10 +32,9 @@ public class BoardImg extends BaseEntity {
     private int sequence;
 
     @ManyToOne
-    @JoinColumn(name = "board_id", nullable = false,insertable=false, updatable=false)
     private Board board;
 
-    @Column(name="board_id")
+    @Column(name="board_id", insertable = false, updatable = false)
     private Long boardId;
 
     public BoardImg(String imgUrl,Long BoardId,int sequence){

@@ -3,10 +3,14 @@ package com.app.cindy.domain.board;
 import com.app.cindy.domain.BaseEntity;
 import com.app.cindy.domain.user.User;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "Board")
@@ -17,6 +21,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @DynamicUpdate
 @DynamicInsert
+@ToString
 public class Board extends BaseEntity {
     @Id
     @Column(name = "id")
@@ -41,6 +46,13 @@ public class Board extends BaseEntity {
 
     @Column(name="longitude")
     private double longitude;
+
+    @Column(name="view")
+    @ColumnDefault(value= "0")
+    private Long view;
+
+//    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER)
+//    private final List<BoardImg> images = new ArrayList<>();
 
     public void updateBoard(String title,String content,double latitude, double longitude){
         this.title = title;

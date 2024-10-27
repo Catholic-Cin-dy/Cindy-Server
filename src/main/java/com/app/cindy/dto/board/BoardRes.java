@@ -36,7 +36,6 @@ public class BoardRes {
         @ApiModelProperty(notes = "댓글 수",required = true,example = "123")
         private Long commentCount;
 
-
         @ApiModelProperty(notes = "좋아요 누른 여부",required = true,example = "ture")
         private boolean likeCheck;
 
@@ -130,6 +129,31 @@ public class BoardRes {
     @NoArgsConstructor
     @ApiModel(value = "04-06 OOTD  게시판 댓글 조회 👗 API Response #FRAME OOTD 04-02")
     public static class BoardComment {
+        @ApiModelProperty(notes = "댓글 id",required = true,example = "1")
+        private  Long commentId;
+        @ApiModelProperty(notes = "작성자 id 값",required = true,example = "1")
+        private Long userId;
+        @ApiModelProperty(notes = "프로필 이미지",required = true,example = "프로필 이미지 url")
+        private String profileImgUrl;
+        @ApiModelProperty(notes = "게시글 작성자 이름",required = true,example = "이메누")
+        private String nickName;
+        @ApiModelProperty(notes = "게시글 내용",required = true,example = "이뻐요")
+        private String comment;
+        @ApiModelProperty(notes = "게시글 작성 시간",required = true,example = "1시간 전")
+        private String commentTime;
+        @ApiModelProperty(notes = "자기 댓글 유무",required = true,example = "true")
+        private boolean isMy;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ApiModel(value = "내가 작성한 게시글의 댓글 모아보기")
+    public static class MyBoardsComments {
+        @ApiModelProperty(notes = "게시물 id",required = true,example = "1")
+        private Long boardId;
         @ApiModelProperty(notes = "댓글 id",required = true,example = "1")
         private  Long commentId;
         @ApiModelProperty(notes = "작성자 id 값",required = true,example = "1")

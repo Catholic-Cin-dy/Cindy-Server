@@ -1,5 +1,6 @@
 package com.app.cindy.service;
 
+import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -9,22 +10,34 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.transfer.TransferManager;
+import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
+import com.amazonaws.services.s3.transfer.Upload;
 import com.app.cindy.exception.BadRequestException;
 import com.app.cindy.exception.BaseException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Date;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import static com.app.cindy.constants.CommonResponseStatus.S3_DELETE_ERROR;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class S3Service {
@@ -40,8 +53,8 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    @Value("${cloud.aws.region.static}")
-    private String region;
+        @Value("${cloud.aws.region.static}")
+        private String region;
 
     @PostConstruct
     public AmazonS3Client amazonS3Client() {
@@ -50,6 +63,36 @@ public class S3Service {
                 .withRegion(region)
                 .withCredentials(new AWSStaticCredentialsProvider(awsCreds))
                 .build();
+    }
+
+    public CompletableFuture<String> uploadFile(MultipartFile multipartFile) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                TransferManager transferManager = TransferManagerBuilder.standard().withS3Client(s3Client).build();
+                File file = convertMultiPartToFile(multipartFile);
+                String fileName = createFileName(multipartFile.getOriginalFilename());
+                InputStream inputStream = multipartFile.getInputStream();
+                ObjectMetadata objectMetadata = new ObjectMetadata();
+                objectMetadata.setContentLength(multipartFile.getSize());
+                objectMetadata.setContentType(multipartFile.getContentType());
+                PutObjectRequest request = new PutObjectRequest(bucket + "/post/image",fileName ,inputStream, objectMetadata);
+                // 업로드 시도
+                Upload upload = transferManager.upload(request);
+                upload.waitForCompletion();
+                file.delete();  // 로컬에 임시 저장된 파일 삭제
+                return fileName;
+            } catch (Exception e) {
+                throw new RuntimeException("파일 업로드 실패: " + multipartFile.getOriginalFilename(), e);
+            }
+        });
+    }
+
+    private File convertMultiPartToFile(MultipartFile file) throws IOException {
+        File convFile = new File(file.getOriginalFilename());
+        FileOutputStream fos = new FileOutputStream(convFile);
+        fos.write(file.getBytes());
+        fos.close();
+        return convFile;
     }
 
     public List<String> upload(List<MultipartFile> multipartFile) {
@@ -63,14 +106,33 @@ public class S3Service {
             objectMetadata.setContentType(file.getContentType());
 
             try (InputStream inputStream = file.getInputStream()) {
-                s3Client.putObject(new PutObjectRequest(bucket + "/post/image", fileName, inputStream, objectMetadata)
-                        .withCannedAcl(CannedAccessControlList.PublicRead));
+                uploadOnS3(fileName,inputStream,objectMetadata);
                 imgUrlList.add(s3Client.getUrl(bucket + "/post/image", fileName).toString());
             } catch (IOException e) {
                 //throw new PrivateException(Code.IMAGE_UPLOAD_ERROR);
             }
         }
+        LocalDateTime now = LocalDateTime.now();
+        Long longTime = now.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        System.out.println("버킷에 업로드 전 : " + longTime);
         return imgUrlList;
+    }
+
+    private void uploadOnS3(String fileName, InputStream inputStream, ObjectMetadata objectMetadata) {
+        // AWS S3 전송 객체 생성
+        TransferManager transferManager = TransferManagerBuilder.standard().withS3Client(s3Client).build();
+        // 요청 객체 생성
+        PutObjectRequest request = new PutObjectRequest(bucket + "/post/image", fileName,inputStream, objectMetadata);
+        // 업로드 시도
+        Upload upload =  transferManager.upload(request);
+
+        try {
+            upload.waitForCompletion();
+        } catch (AmazonClientException amazonClientException) {
+            log.error(amazonClientException.getMessage());
+        } catch (InterruptedException e) {
+            log.error(e.getMessage());
+        }
     }
 
     // 이미지파일명 중복 방지
@@ -132,6 +194,8 @@ public class S3Service {
                 //throw new PrivateException(Code.IMAGE_UPLOAD_ERROR);
             }
         }
+
+
 }
 
 
